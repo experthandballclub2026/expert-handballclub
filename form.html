@@ -14,7 +14,7 @@
   --fd:'Bebas Neue',cursive;--fb:'DM Sans',sans-serif;--fc:'Barlow Condensed',sans-serif
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--fb);background:#06060A;color:var(--w);min-height:100vh;padding:1rem 0 60px}
+body{font-family:var(--fb);background:#06060A;color:var(--w);padding:1rem 0 80px;overflow-x:hidden}
 
 .wrap{max-width:520px;margin:0 auto;padding:0 1rem;position:relative;z-index:2}
 
@@ -553,6 +553,17 @@ function resetForm() {
   }
   animate();
 })();
+</script>
+
+<script>
+function notifyHeight() {
+  var h = document.body.scrollHeight;
+  window.parent.postMessage({type:'iframeHeight', height:h}, '*');
+}
+window.addEventListener('load', notifyHeight);
+window.addEventListener('resize', notifyHeight);
+var obs = new MutationObserver(notifyHeight);
+obs.observe(document.body, {childList:true, subtree:true, attributes:true});
 </script>
 </body>
 </html>

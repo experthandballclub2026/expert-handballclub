@@ -15,12 +15,12 @@
   --fd:'Bebas Neue',cursive;--fb:'DM Sans',sans-serif;--fc:'Barlow Condensed',sans-serif
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh}
+body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;overflow:hidden}
 #bgCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 
 /* SCREENS */
 .app-screen{display:none;min-height:100vh;position:relative;z-index:1}
-#screen-login{display:flex;align-items:center;justify-content:center}
+#screen-login{display:flex;align-items:center;justify-content:center;overflow:hidden}
 .fade-in{animation:fadeIn .25s ease forwards}
 @keyframes fadeIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
 
@@ -228,7 +228,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 .notif-dot{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--g);border-radius:50%;box-shadow:0 0 6px var(--g)}
 
 /* ── MAIN ── */
-.main{margin-left:var(--sidebar);margin-top:var(--header);padding:1.5rem;min-height:calc(100vh - var(--header));position:relative;z-index:1}
+.main{margin-left:var(--sidebar);margin-top:var(--header);padding:1.5rem;min-height:calc(100vh - var(--header));position:relative;z-index:1;overflow-y:auto;height:calc(100vh - var(--header))}
+#page-form{margin:-1.5rem;overflow:hidden}
 
 /* ── PAGE ── */
 .page{display:none}
@@ -754,8 +755,8 @@ function forgotPin() {
   </div>
 
   <!-- PLACEHOLDER PAGES -->
-  <div class="page" id="page-form" style="height:calc(100vh - var(--header));padding:0;overflow:hidden">
-    <iframe id="formIframe" src="form.html" style="width:100%;height:100%;border:none;background:#06060A"></iframe>
+  <div class="page" id="page-form" style="padding:0;margin:-1.5rem;">
+    <iframe id="formIframe" src="form.html" scrolling="no" style="display:block;width:100%;height:100vh;border:none;background:#06060A;" onload="resizeIframe(this)"></iframe>
   </div>
   <div class="page" id="page-players"></div>
   </div>
@@ -1089,6 +1090,30 @@ function updateGreeting(){
   document.getElementById('greetTime').textContent = g;
 }
 updateGreeting();
+
+
+// Auto resize iframe to content height
+function resizeIframe(iframe) {
+  try {
+    iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
+    // Watch for content changes
+    var observer = new MutationObserver(function() {
+      iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
+    });
+    observer.observe(iframe.contentWindow.document.body, {childList:true, subtree:true});
+  } catch(e) {
+    iframe.style.height = '100vh';
+  }
+}
+
+
+// Listen for iframe height from form
+window.addEventListener('message', function(e) {
+  if(e.data && e.data.type === 'iframeHeight') {
+    var iframe = document.getElementById('formIframe');
+    if(iframe) iframe.style.height = (e.data.height + 20) + 'px';
+  }
+});
 
 /* SHOOTING STARS */
 (function(){
