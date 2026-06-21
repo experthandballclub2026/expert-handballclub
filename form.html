@@ -16,7 +16,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;padding:1rem 0 80px}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,140,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,140,.022) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0}
-.wrap{max-width:100%;width:100%;margin:0;padding:0 1.25rem;position:relative;z-index:2}
+.wrap{max-width:600px;margin:0 auto;padding:0 1.25rem;position:relative;z-index:2}
 
 /* Header */
 .hdr{padding:2rem 2.8rem 1.5rem;text-align:center}
@@ -90,7 +90,7 @@ textarea{resize:vertical;min-height:64px}
 
 
 /* Card frame for sections */
-.card{background:var(--s1);border:1px solid var(--br);border-radius:16px;padding:1.4rem 1.6rem;margin:0 0 12px 0;
+.card{background:var(--s1);border:1px solid var(--br);border-radius:16px;padding:1.4rem 1.6rem;margin:0 2.8rem 12px 2.8rem;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.3)}
 .card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--g),rgba(0,255,140,.1));border-radius:3px 0 0 3px}
 
 
