@@ -14,7 +14,7 @@
   --fd:'Bebas Neue',cursive;--fb:'DM Sans',sans-serif;--fc:'Barlow Condensed',sans-serif
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;padding:1rem 0 80px}
+body{font-family:var(--fb);background:var(--bg);color:var(--w);padding:1rem 0 80px}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,140,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,140,.022) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0}
 .wrap{max-width:600px;margin:0 auto;padding:0 1.25rem;position:relative;z-index:2}
 
@@ -555,11 +555,13 @@ function resetForm() {
 })();
 </script>
 <script>
-function notifyHeight(){
+function sendHeight(){
   window.parent.postMessage({type:'iframeHeight',height:document.body.scrollHeight},'*');
 }
-window.addEventListener('load', notifyHeight);
-new MutationObserver(notifyHeight).observe(document.body,{childList:true,subtree:true});
+window.addEventListener('load', function(){ setTimeout(sendHeight, 100); });
+window.addEventListener('resize', sendHeight);
+new MutationObserver(function(){ setTimeout(sendHeight,50); })
+  .observe(document.body,{childList:true,subtree:true,attributes:true});
 </script>
 </body>
 </html>
