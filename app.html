@@ -6,7 +6,6 @@
 <title>Expert Handball Club</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ── ROOT ── */
 :root{
   --bg:#06060A;--s1:#0D0D14;--s2:#111119;--s3:#16161f;
   --g:#00FF8C;--gd:rgba(0,255,140,0.6);--gbg:rgba(0,255,140,0.06);--gb:rgba(0,255,140,0.18);
@@ -16,37 +15,26 @@
   --fd:'Bebas Neue',cursive;--fb:'DM Sans',sans-serif;--fc:'Barlow Condensed',sans-serif
 }
 *{box-sizing:border-box;margin:0;padding:0}
-
-/* ── BODY — allow natural scroll ── */
-html,body{
-  font-family:var(--fb);
-  background:var(--bg);
-  color:var(--w);
-  min-height:100vh;
-  overflow-x:hidden;
-}
-
+html{overflow-x:hidden}
+body{font-family:var(--fb);background:var(--bg);color:var(--w);}
 #bgCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 
-/* ── SCREENS ── */
+/* SCREENS */
 .app-screen{display:none;position:relative;z-index:1}
 #screen-login{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:100vh;
-  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;overflow:hidden;
 }
 .fade-in{animation:fadeIn .25s ease forwards}
 @keyframes fadeIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
 
-/* ── GLOBAL TOAST ── */
+/* GLOBAL TOAST */
 .g-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--s1);border:1px solid var(--gb);border-radius:10px;padding:11px 20px;font-family:var(--fc);font-size:13px;letter-spacing:.05em;color:var(--w);z-index:9999;transition:transform .3s;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.4)}
 .g-toast.show{transform:translateX(-50%) translateY(0)}
 .g-toast.err{border-color:var(--redb);color:var(--red)}
 .g-toast.ok{border-color:var(--gb);color:var(--g)}
 
-/* ── LOGIN CSS ── */
+/* LOGIN */
 
 :root{
   --bg:#06060A;--s1:#0D0D14;--s2:#111119;
@@ -62,7 +50,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 #bgCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 
 /* ── CARD ── */
-.login-wrap{position:relative;z-index:1;width:100%;max-width:380px;padding:1.2rem}
+.login-wrap{position:relative;z-index:1;width:100%;max-width:400px;padding:1.2rem}
 .login-card{
   background:var(--s1);border:1px solid var(--br);border-radius:20px;
   padding:2.2rem 2rem;box-shadow:0 24px 64px rgba(0,0,0,.5),0 0 0 1px rgba(0,255,140,.04);
@@ -108,7 +96,12 @@ input.err{border-color:var(--redb);box-shadow:0 0 0 3px var(--redbg)}
 
 /* PIN input */
 .pin-wrap{display:flex;gap:8px;justify-content:center}
-.pin-digit{width:34px!important;height:40px!important;font-size:15px!important}
+.pin-digit{
+  width:48px;height:56px;text-align:center;font-size:22px;font-family:var(--fd);
+  letter-spacing:.05em;background:var(--s2);border:1px solid rgba(255,255,255,.07);
+  border-radius:10px;color:var(--g);outline:none;transition:all .2s;
+  -webkit-appearance:none;caret-color:var(--g)
+}
 .pin-digit:focus{border-color:var(--gb);box-shadow:0 0 0 3px rgba(0,255,140,.07);background:var(--gbg)}
 .pin-digit.filled{border-color:var(--gb);background:var(--gbg)}
 .pin-digit.err{border-color:var(--redb);box-shadow:0 0 0 3px var(--redbg)}
@@ -160,9 +153,12 @@ input.err{border-color:var(--redb);box-shadow:0 0 0 3px var(--redbg)}
 .toast.err{border-color:var(--redb);color:var(--red)}
 .toast.ok{border-color:var(--gb);color:var(--g)}
 
-.pin-digit{width:34px!important;height:40px!important;font-size:15px!important}
 
-/* ── DASHBOARD CSS ── */
+/* PIN size fix */
+.pin-digit{width:26px!important;height:34px!important;font-size:12px!important}
+.pin-wrap{display:flex;gap:6px;justify-content:center;padding:0 0.5rem}
+
+/* DASHBOARD */
 
 :root{
   --bg:#06060A;--s1:#0D0D14;--s2:#111119;--s3:#16161f;
@@ -312,34 +308,24 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 }
 
 
-/* ── DASHBOARD LAYOUT FIX ── */
-.sidebar{
-  position:fixed!important;
-  left:0;top:0;height:100vh;
-  width:var(--sidebar);
-  z-index:100;
-  overflow-y:auto;
-}
-.header{
-  position:fixed!important;
-  left:var(--sidebar);right:0;top:0;
-  height:var(--header);
-  z-index:99;
-}
+/* DASHBOARD LAYOUT */
+.sidebar{position:fixed!important;left:0;top:0;height:100vh;width:var(--sidebar);z-index:100;overflow-y:auto}
+.header{position:fixed!important;left:var(--sidebar);right:0;top:0;height:var(--header);z-index:99}
 .main{
   margin-left:var(--sidebar)!important;
   margin-top:var(--header)!important;
-  padding:1.5rem!important;
-  min-height:calc(100vh - var(--header))!important;
-  height:auto!important;
-  overflow:visible!important;
-  position:relative;
-  z-index:1;
+  padding:0!important;
+  position:relative;z-index:1;
 }
-#page-form{margin:-1.5rem!important;padding:0!important;}
-#page-form iframe{display:block;width:100%;border:none;background:#06060A;}
 
-/* Mobile */
+/* PAGE default padding */
+.page{padding:1.5rem}
+
+/* FORM PAGE - no padding, iframe fills all */
+#page-form{padding:0!important;}
+#page-form iframe{display:block;width:100%;border:none;}
+
+/* MOBILE */
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%)}
   .sidebar.open{transform:translateX(0)}
@@ -349,7 +335,6 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 </style>
 </head>
 <body>
-
 <canvas id="bgCanvas"></canvas>
 <div class="g-toast" id="gToast"></div>
 
@@ -798,8 +783,8 @@ function forgotPin() {
   </div>
 
   <!-- PLACEHOLDER PAGES -->
-  <div class="page" id="page-form" style="padding:0;margin:-1.5rem;">
-    <iframe id="formIframe" src="form.html" scrolling="yes" style="display:block;width:100%;min-height:100vh;border:none;background:#06060A;" onload="this.style.height=this.contentDocument.body.scrollHeight+'px'"></iframe></iframe>
+  <div class="page" id="page-form">
+    <iframe id="formIframe" src="form.html" style="display:block;width:100%;height:100vh;border:none;" onload="this.style.height=this.contentDocument.body.scrollHeight+'px'"></iframe>
   </div>
   </div>
   <div class="page" id="page-players"></div>
@@ -900,16 +885,14 @@ function gToast(msg,type){
 }
 
 function showScreen(id){
-  document.querySelectorAll('.app-screen').forEach(function(s){
-    s.style.display='none';
-  });
+  document.querySelectorAll('.app-screen').forEach(function(s){s.style.display='none';});
   var el=document.getElementById('screen-'+id);
   if(id==='login'){
     el.style.display='flex';
     document.body.style.overflow='hidden';
   }else{
     el.style.display='block';
-    document.body.style.overflow='';
+    document.body.style.overflow='auto';
   }
   el.classList.add('fade-in');
   setTimeout(function(){el.classList.remove('fade-in');},300);
@@ -942,7 +925,7 @@ window.addEventListener('load',function(){
   else document.body.style.overflow='hidden';
 });
 
-/* ── LOGIN JS ── */
+/* LOGIN JS */
 // =============================================
 // GANTI DENGAN URL APPS SCRIPT KAMU
 // =============================================
@@ -1112,7 +1095,7 @@ async function doSignup(){
   }catch(e){gToast('❌ Failed to connect','err');setLoading('signup',false);}
 }
 
-/* ── DASHBOARD JS ── */
+/* DASHBOARD JS */
 // Navigation
 var titles = {
   home:'HOME / DASHBOARD', form:'FORM / REGISTRATION',
@@ -1146,7 +1129,7 @@ function updateGreeting(){
 }
 updateGreeting();
 
-/* ── IFRAME AUTO HEIGHT ── */
+/* IFRAME AUTO HEIGHT */
 window.addEventListener('message',function(e){
   if(e.data&&e.data.type==='iframeHeight'){
     var f=document.getElementById('formIframe');
@@ -1154,7 +1137,7 @@ window.addEventListener('message',function(e){
   }
 });
 
-/* ── SHOOTING STARS ── */
+/* SHOOTING STARS */
 (function(){
   var c=document.getElementById('bgCanvas'),ctx=c.getContext('2d'),W,H;
   function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
