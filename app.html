@@ -6,8 +6,9 @@
 <title>Expert Handball Club</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
+/* ── ROOT ── */
 :root{
-  --bg:#06060A;--s1:#0D0D14;--s2:#111119;
+  --bg:#06060A;--s1:#0D0D14;--s2:#111119;--s3:#16161f;
   --g:#00FF8C;--gd:rgba(0,255,140,0.6);--gbg:rgba(0,255,140,0.06);--gb:rgba(0,255,140,0.18);
   --w:#F0F0F6;--w2:#AAAABC;--w3:#5A5A70;--br:rgba(255,255,255,0.07);
   --red:#FF4560;--redbg:rgba(255,69,96,0.08);--redb:rgba(255,69,96,0.25);
@@ -15,22 +16,37 @@
   --fd:'Bebas Neue',cursive;--fb:'DM Sans',sans-serif;--fc:'Barlow Condensed',sans-serif
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;overflow:hidden}
+
+/* ── BODY — allow natural scroll ── */
+html,body{
+  font-family:var(--fb);
+  background:var(--bg);
+  color:var(--w);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
 #bgCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 
-/* SCREENS */
-.app-screen{display:none;min-height:100vh;position:relative;z-index:1}
-#screen-login{display:flex;align-items:center;justify-content:center;overflow:hidden}
+/* ── SCREENS ── */
+.app-screen{display:none;position:relative;z-index:1}
+#screen-login{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  overflow:hidden;
+}
 .fade-in{animation:fadeIn .25s ease forwards}
 @keyframes fadeIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
 
-/* GLOBAL TOAST */
+/* ── GLOBAL TOAST ── */
 .g-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--s1);border:1px solid var(--gb);border-radius:10px;padding:11px 20px;font-family:var(--fc);font-size:13px;letter-spacing:.05em;color:var(--w);z-index:9999;transition:transform .3s;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.4)}
 .g-toast.show{transform:translateX(-50%) translateY(0)}
 .g-toast.err{border-color:var(--redb);color:var(--red)}
 .g-toast.ok{border-color:var(--gb);color:var(--g)}
 
-/* LOGIN */
+/* ── LOGIN CSS ── */
 
 :root{
   --bg:#06060A;--s1:#0D0D14;--s2:#111119;
@@ -149,11 +165,9 @@ input.err{border-color:var(--redb);box-shadow:0 0 0 3px var(--redbg)}
 .toast.err{border-color:var(--redb);color:var(--red)}
 .toast.ok{border-color:var(--gb);color:var(--g)}
 
+.pin-digit{width:40px!important;height:46px!important;font-size:18px!important}
 
-/* Fix PIN size */
-.pin-digit{width:40px !important;height:46px !important;font-size:18px !important}
-
-/* DASHBOARD */
+/* ── DASHBOARD CSS ── */
 
 :root{
   --bg:#06060A;--s1:#0D0D14;--s2:#111119;--s3:#16161f;
@@ -228,9 +242,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 .notif-dot{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--g);border-radius:50%;box-shadow:0 0 6px var(--g)}
 
 /* ── MAIN ── */
-.main{margin-left:var(--sidebar);margin-top:var(--header);padding:1.5rem;min-height:calc(100vh - var(--header));position:relative;z-index:1;overflow-y:auto;height:calc(100vh - var(--header))}
-#page-form{position:fixed;top:56px;left:220px;right:0;bottom:0;margin:0;padding:0;overflow:hidden}
-#page-form iframe{width:100%;height:100%;border:none;display:block}
+.main{margin-left:var(--sidebar);margin-top:var(--header);padding:1.5rem;min-height:calc(100vh - var(--header));position:relative;z-index:1}
 
 /* ── PAGE ── */
 .page{display:none}
@@ -304,6 +316,50 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
   .main{padding:1rem .85rem}
 }
 
+
+/* ── DASHBOARD LAYOUT FIX ── */
+.sidebar{
+  position:fixed!important;
+  left:0;top:0;height:100vh;
+  width:var(--sidebar);
+  z-index:100;
+  overflow-y:auto;
+}
+.header{
+  position:fixed!important;
+  left:var(--sidebar);right:0;top:0;
+  height:var(--header);
+  z-index:99;
+}
+.main{
+  margin-left:var(--sidebar)!important;
+  margin-top:var(--header)!important;
+  padding:1.5rem!important;
+  min-height:calc(100vh - var(--header))!important;
+  height:auto!important;
+  overflow:visible!important;
+  position:relative;
+  z-index:1;
+}
+#page-form{
+  margin:-1.5rem!important;
+  padding:0!important;
+  overflow:visible!important;
+}
+#page-form iframe{
+  display:block;
+  width:100%;
+  border:none;
+  background:#06060A;
+}
+
+/* Mobile */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .header{left:0!important}
+  .main{margin-left:0!important}
+}
 </style>
 </head>
 <body>
@@ -756,9 +812,10 @@ function forgotPin() {
   </div>
 
   <!-- PLACEHOLDER PAGES -->
-  <div class="page" id="page-form" style="padding:0;margin:-1.5rem;overflow:hidden;">
-    <iframe id="formIframe" src="form.html" scrolling="yes" style="display:block;width:100%;height:calc(100vh - 56px);border:none;background:#06060A;"></iframe>
-    </div>
+  <div class="page" id="page-form" style="padding:0;margin:-1.5rem;">
+    <iframe id="formIframe" src="form.html" scrolling="no" style="display:block;width:100%;border:none;background:#06060A;" onload="this.style.height=this.contentDocument.body.scrollHeight+'px'"></iframe>
+  </div>
+  </div>
   <div class="page" id="page-players"></div>
   </div>
   <div class="page" id="page-report"></div>
@@ -857,11 +914,20 @@ function gToast(msg,type){
 }
 
 function showScreen(id){
-  document.querySelectorAll('.app-screen').forEach(function(s){s.style.display='none';});
+  document.querySelectorAll('.app-screen').forEach(function(s){
+    s.style.display='none';
+  });
   var el=document.getElementById('screen-'+id);
-  el.style.display=id==='login'?'flex':'block';
+  if(id==='login'){
+    el.style.display='flex';
+    document.body.style.overflow='hidden';
+  }else{
+    el.style.display='block';
+    document.body.style.overflow='';
+  }
   el.classList.add('fade-in');
   setTimeout(function(){el.classList.remove('fade-in');},300);
+  window.scrollTo(0,0);
 }
 
 function showDashboard(user){
@@ -885,10 +951,12 @@ document.addEventListener('click',function(e){
 });
 
 window.addEventListener('load',function(){
-  var s=getSession(); if(s) showDashboard(s);
+  var s=getSession();
+  if(s) showDashboard(s);
+  else document.body.style.overflow='hidden';
 });
 
-/* LOGIN JS */
+/* ── LOGIN JS ── */
 // =============================================
 // GANTI DENGAN URL APPS SCRIPT KAMU
 // =============================================
@@ -1058,7 +1126,7 @@ async function doSignup(){
   }catch(e){gToast('❌ Failed to connect','err');setLoading('signup',false);}
 }
 
-/* DASHBOARD JS */
+/* ── DASHBOARD JS ── */
 // Navigation
 var titles = {
   home:'HOME / DASHBOARD', form:'FORM / REGISTRATION',
@@ -1092,31 +1160,15 @@ function updateGreeting(){
 }
 updateGreeting();
 
-
-// Auto resize iframe to content height
-function resizeIframe(iframe) {
-  try {
-    iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
-    // Watch for content changes
-    var observer = new MutationObserver(function() {
-      iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
-    });
-    observer.observe(iframe.contentWindow.document.body, {childList:true, subtree:true});
-  } catch(e) {
-    iframe.style.height = '100vh';
-  }
-}
-
-
-// Listen for iframe height from form
-window.addEventListener('message', function(e) {
-  if(e.data && e.data.type === 'iframeHeight') {
-    var iframe = document.getElementById('formIframe');
-    if(iframe) iframe.style.height = (e.data.height + 20) + 'px';
+/* ── IFRAME AUTO HEIGHT ── */
+window.addEventListener('message',function(e){
+  if(e.data&&e.data.type==='iframeHeight'){
+    var f=document.getElementById('formIframe');
+    if(f) f.style.height=(e.data.height+20)+'px';
   }
 });
 
-/* SHOOTING STARS */
+/* ── SHOOTING STARS ── */
 (function(){
   var c=document.getElementById('bgCanvas'),ctx=c.getContext('2d'),W,H;
   function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
