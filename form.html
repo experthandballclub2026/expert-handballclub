@@ -14,12 +14,12 @@
   --fd:'Bebas Neue',cursive;--fb:'DM Sans',sans-serif;--fc:'Barlow Condensed',sans-serif
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--fb);background:#06060A;color:var(--w);padding:1rem 0 80px;overflow:hidden;}
-
-.wrap{max-width:100%;width:100%;margin:0;padding:0 2rem;position:relative;z-index:2}
+body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;padding:1rem 0 80px}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,140,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,140,.022) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0}
+.wrap{max-width:600px;margin:0 auto;padding:0 1.25rem;position:relative;z-index:2}
 
 /* Header */
-.hdr{padding:1rem 0 .5rem;text-align:center}
+.hdr{padding:2rem 2.8rem 1.5rem;text-align:center}
 .hdr-top{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:14px}
 .logo-img{width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 0 16px rgba(0,255,140,.5))}
 .hdr-title{font-family:var(--fd);font-size:clamp(30px,8vw,48px);color:var(--w);letter-spacing:.04em;line-height:.9;text-align:center}
@@ -90,7 +90,7 @@ textarea{resize:vertical;min-height:64px}
 
 
 /* Card frame for sections */
-.card{background:var(--s1);border:1px solid var(--br);border-radius:16px;padding:1.4rem 1.6rem;margin:0 0 12px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.3)}
+.card{background:var(--s1);border:1px solid var(--br);border-radius:16px;padding:1.4rem 1.6rem;margin:0 2.8rem 12px 2.8rem;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.3)}
 .card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--g),rgba(0,255,140,.1));border-radius:3px 0 0 3px}
 
 
@@ -106,14 +106,14 @@ textarea{resize:vertical;min-height:64px}
   input,select,textarea{font-size:16px;padding:11px 13px}
   .sub-btn{font-size:20px;padding:18px}
   .pos-grid{grid-template-columns:repeat(2,1fr)}
-  .wrap{max-width:100%;width:100%;margin:0;padding:0 2rem;position:relative;z-index:2}
+  .wrap{padding:0 .5rem}
   .card{margin:0 1.25rem 10px 1.25rem}
-  .hdr{padding:1rem 0 .5rem;text-align:center}
-  .sub-wrap{padding:.5rem 0 1rem}
+  .hdr{padding:2rem 1.25rem 1.5rem}
+  .sub-wrap{padding:.5rem 1.25rem 1rem}
 }
 
 /* Submit */
-.sub-wrap{padding:.5rem 0 1rem}
+.sub-wrap{padding:.5rem 2.8rem 1rem}
 .sub-btn{width:100%;max-width:440px;padding:16px;background:linear-gradient(135deg,#00FF8C 0%,#00CC70 100%);color:#06060A;border:none;border-radius:12px;font-family:var(--fd);font-size:22px;letter-spacing:.1em;cursor:pointer;transition:all .2s;box-shadow:0 4px 24px rgba(0,255,140,.3),0 0 40px rgba(0,255,140,.1);display:flex;align-items:center;justify-content:center;gap:10px}
 .sub-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,255,140,.45),0 0 60px rgba(0,255,140,.15)}
 .sub-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
@@ -554,16 +554,12 @@ function resetForm() {
   animate();
 })();
 </script>
-
 <script>
-function notifyHeight() {
-  var h = document.body.scrollHeight;
-  window.parent.postMessage({type:'iframeHeight', height:h}, '*');
+function notifyHeight(){
+  window.parent.postMessage({type:'iframeHeight',height:document.body.scrollHeight},'*');
 }
 window.addEventListener('load', notifyHeight);
-window.addEventListener('resize', notifyHeight);
-var obs = new MutationObserver(notifyHeight);
-obs.observe(document.body, {childList:true, subtree:true, attributes:true});
+new MutationObserver(notifyHeight).observe(document.body,{childList:true,subtree:true});
 </script>
 </body>
 </html>
