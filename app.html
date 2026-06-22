@@ -238,6 +238,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 /* ── PAGE ── */
 .page{display:none}
 .page.active{display:block}
+#page-form.active{padding:0!important;margin:0!important;}
+#page-form iframe{display:block;width:100%;border:none;}
 
 /* ── HOME PAGE ── */
 .home-greeting{margin-bottom:1.5rem}
@@ -320,11 +322,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 
 /* PAGE default padding */
 .page{display:none;padding:1.5rem;}
-#page-form{padding:0!important;}
 
 /* FORM PAGE - no padding, iframe fills all */
-#page-form{padding:0!important;margin:-1.5rem!important;width:calc(100% + 3rem)!important;}
-#page-form iframe{display:block;width:100%;border:none;min-height:100vh;overflow:visible;}
 
 /* MOBILE */
 @media(max-width:768px){
