@@ -802,19 +802,6 @@ function forgotPin() {
 
 <script>
 // Navigation
-var titles = {
-  home:'HOME / DASHBOARD', form:'FORM / PENDAFTARAN',
-  players:'DATA / LIST PEMAIN', report:'DATA / REPORT PERFORMANCE',
-  finance:'DATA / FINANCE', absensi:'DATA / ABSENSI', training:'DATA / TRAINING SCHEDULE'
-};
-function goPage(id, el) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
-  if(el) el.classList.add('active');
-  document.getElementById('hdrTitle').textContent = titles[id]||id.toUpperCase();
-  closeSidebar();
-}
 
 // Sidebar mobile
 function toggleSidebar(){
