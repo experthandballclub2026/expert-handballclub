@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>List Pemain — Expert Handball</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06060A;--s1:#0D0D14;--s2:#111119;
+  --g:#00FF8C;--gbg:rgba(0,255,140,.06);--gb:rgba(0,255,140,.2);
+  --gold:#FFD700;--goldb:rgba(255,215,0,.28);--goldbg:rgba(255,215,0,.07);
+  --w:#F0F0F6;--w2:#AAAABC;--w3:#55556A;--br:rgba(255,255,255,.07);
+  --red:#FF4560;--redb:rgba(255,69,96,.3);--blue:#00B4FF;
+  --fd:'Bebas Neue',cursive;--fb:'DM Sans',sans-serif;--fc:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;padding:1.5rem}
+
+/* HEADER */
+.hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.4rem;gap:1rem;flex-wrap:wrap}
+.hdr-title{font-family:var(--fd);font-size:clamp(22px,5vw,30px);letter-spacing:.08em}
+.hdr-title span{color:var(--g)}
+.hdr-sub{font-family:var(--fc);font-size:9.5px;letter-spacing:.18em;color:var(--w3);text-transform:uppercase;margin-top:3px}
+.hdr-right{display:flex;align-items:center;gap:8px}
+.search-wrap{position:relative}
+.search-wrap input{background:var(--s1);border:1px solid var(--br);border-radius:10px;padding:9px 14px 9px 36px;font-size:13px;font-family:var(--fb);color:var(--w);outline:none;width:200px;transition:border-color .2s}
+.search-wrap input:focus{border-color:var(--gb)}
+.search-wrap input::placeholder{color:var(--w3)}
+.srch-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--w3);pointer-events:none}
+.btn-r{background:var(--s1);border:1px solid var(--br);border-radius:10px;width:38px;height:38px;color:var(--w3);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.btn-r:hover{border-color:var(--gb);color:var(--g)}
+.btn-r.spinning{animation:spin .7s linear infinite}
+
+/* STATS */
+.stats{display:flex;gap:10px;margin-bottom:1.2rem;flex-wrap:wrap}
+.stat{background:var(--s1);border:1px solid var(--br);border-radius:12px;padding:.75rem 1.1rem;flex:1;min-width:110px;position:relative;overflow:hidden}
+.stat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--g),transparent)}
+.sv{font-family:var(--fd);font-size:24px;color:var(--g);line-height:1}
+.sl{font-family:var(--fc);font-size:9px;letter-spacing:.14em;color:var(--w3);text-transform:uppercase;margin-top:2px}
+
+/* TABLE */
+.tbl-wrap{background:var(--s1);border:1px solid var(--br);border-radius:16px;overflow:hidden}
+.tbl-head{display:grid;grid-template-columns:44px 1fr 130px 80px;background:var(--s2);border-bottom:1px solid var(--br);padding:0 1rem}
+.th{font-family:var(--fc);font-size:9px;letter-spacing:.18em;color:var(--w3);text-transform:uppercase;padding:.65rem .4rem;cursor:pointer;user-select:none;transition:color .15s}
+.th:hover{color:var(--w2)}
+.row{display:grid;grid-template-columns:44px 1fr 130px 80px;padding:0 1rem;border-bottom:1px solid var(--br);cursor:pointer;transition:background .12s;align-items:center}
+.row:last-child{border-bottom:none}
+.row:hover{background:rgba(0,255,140,.04)}
+.row:hover .rname{color:var(--g)}
+.td{padding:.85rem .4rem}
+.rno{font-family:var(--fd);font-size:18px;color:var(--g);text-align:center}
+.rname-wrap{display:flex;align-items:center;gap:10px}
+.ava{width:34px;height:34px;border-radius:50%;background:var(--gbg);border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:14px;color:var(--g);flex-shrink:0;overflow:hidden}
+.ava img{width:100%;height:100%;object-fit:cover}
+.rname{font-family:var(--fc);font-size:14px;font-weight:700;letter-spacing:.04em;color:var(--w);transition:color .15s}
+.rnick{font-size:11px;color:var(--w3);margin-top:1px}
+.pos-tag{font-family:var(--fc);font-size:11px;letter-spacing:.04em;color:var(--g);background:var(--gbg);border:1px solid var(--gb);border-radius:20px;padding:3px 11px;display:inline-block;white-space:nowrap}
+.rno-p{font-family:var(--fd);font-size:18px;color:var(--gold);text-align:center}
+
+.loading{display:flex;align-items:center;justify-content:center;padding:3rem;gap:12px;font-family:var(--fc);font-size:10.5px;letter-spacing:.14em;color:var(--w3);text-transform:uppercase}
+.spinner{width:18px;height:18px;border:2px solid rgba(0,255,140,.15);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{display:flex;flex-direction:column;align-items:center;padding:4rem 2rem;gap:.8rem}
+.empty-ico{font-size:36px;opacity:.2}
+.empty-txt{font-family:var(--fc);font-size:11px;letter-spacing:.12em;color:var(--w3);text-transform:uppercase}
+.err-bar{background:rgba(255,69,96,.08);border:1px solid var(--redb);border-radius:12px;padding:.8rem 1rem;margin-bottom:1.1rem;font-family:var(--fc);font-size:11px;letter-spacing:.05em;color:var(--red);display:none;gap:8px;align-items:flex-start;line-height:1.6}
+.err-bar.show{display:flex}
+
+/* ════ DIGIMON CARD ════ */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:400;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .28s;backdrop-filter:blur(5px)}
+.overlay.open{opacity:1;pointer-events:all}
+.card{position:relative;width:min(348px,92vw);background:#070710;border-radius:20px;border:2px solid var(--gold);box-shadow:0 0 50px rgba(255,215,0,.22),0 0 100px rgba(0,0,0,.9);overflow:hidden;font-family:var(--fc);animation:popIn .32s cubic-bezier(.34,1.56,.64,1);max-height:95vh;overflow-y:auto}
+.card::-webkit-scrollbar{display:none}
+@keyframes popIn{from{transform:scale(.72);opacity:0}to{transform:scale(1);opacity:1}}
+.card::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 50% 55%,rgba(255,215,0,.12) 0%,transparent 60%),radial-gradient(ellipse at 80% 10%,rgba(0,255,140,.07) 0%,transparent 45%)}
+
+.c-top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:10px 15px 8px;border-bottom:1px solid rgba(255,215,0,.18)}
+.c-club{font-size:8px;letter-spacing:.28em;color:var(--gold);text-transform:uppercase;opacity:.6}
+.c-lv{background:var(--goldbg);border:1px solid var(--goldb);border-radius:20px;padding:3px 11px;font-size:8.5px;letter-spacing:.12em;color:var(--gold)}
+
+.c-meta{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:8px 15px 4px}
+.c-circle{width:46px;height:46px;border-radius:50%;background:var(--s2);border:2px solid var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(255,215,0,.25)}
+.c-clbl{font-size:6.5px;letter-spacing:.1em;color:var(--gold);text-transform:uppercase}
+.c-cval{font-family:var(--fd);font-size:21px;color:var(--gold);line-height:1}
+.c-dp{text-align:right}
+.c-dpn{font-family:var(--fd);font-size:36px;color:var(--w);line-height:1}
+.c-dpl{font-family:var(--fd);font-size:13px;color:var(--gold);letter-spacing:.1em}
+
+.c-hero{position:relative;z-index:2;height:168px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.c-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 110%,rgba(255,215,0,.2) 0%,transparent 60%);pointer-events:none}
+.c-lightning{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(112deg,transparent 0%,transparent 48%,rgba(255,215,0,.04) 48%,rgba(255,215,0,.04) 50%,transparent 50%)}
+.c-ava{width:128px;height:128px;border-radius:50%;background:radial-gradient(circle,#16161f,#0d0d14);border:3px solid rgba(255,215,0,.48);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:52px;color:var(--gold);box-shadow:0 0 32px rgba(255,215,0,.22),0 0 70px rgba(0,0,0,.5);text-shadow:0 0 20px rgba(255,215,0,.5);position:relative;z-index:2;overflow:hidden}
+.c-ava img{width:100%;height:100%;object-fit:cover}
+
+.c-plate{position:relative;z-index:2;background:linear-gradient(135deg,#0c0c13,#101018);border-top:1px solid rgba(255,215,0,.28);border-bottom:1px solid rgba(255,215,0,.28);padding:10px 15px 9px}
+.c-nick{font-size:9px;letter-spacing:.22em;color:var(--w3);text-transform:uppercase;margin-bottom:3px}
+.c-nick span{color:rgba(255,215,0,.75)}
+.c-name{font-family:var(--fd);font-size:28px;letter-spacing:.07em;color:var(--w);line-height:.95}
+.c-types{display:flex;align-items:center;gap:6px;margin-top:7px}
+.c-type{font-size:9px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;opacity:.8}
+.c-sep{color:var(--w3);opacity:.35}
+.c-code{font-size:8.5px;letter-spacing:.08em;color:var(--w3);opacity:.45}
+.rar-sr{font-family:var(--fd);font-size:13px;color:var(--gold)}
+.rar-r{font-family:var(--fd);font-size:13px;color:var(--w2)}
+
+
+
+/* Info dari Google Sheet */
+.c-info{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.05)}
+.ci{padding:8px 15px;border-bottom:1px solid rgba(255,255,255,.04)}
+.ci:nth-child(odd){border-right:1px solid rgba(255,255,255,.04)}
+.ci.full{grid-column:1/-1}
+.ci-lbl{font-size:8px;letter-spacing:.14em;color:var(--w3);text-transform:uppercase;margin-bottom:2px}
+.ci-val{font-size:12px;color:var(--w2);font-family:var(--fc);letter-spacing:.03em}
+
+.c-stats{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;padding:10px 15px}
+.sl{display:flex;align-items:center;gap:6px;padding:4.5px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.sl:nth-child(odd){border-right:1px solid rgba(255,255,255,.04);padding-right:12px}
+.sl:nth-child(even){padding-left:12px}
+.sl.full{grid-column:1/-1;border-right:none}
+.sl-ico{font-size:13px}.sl-nm{font-size:9px;letter-spacing:.1em;color:var(--w3);text-transform:uppercase;flex:1}
+.sl-val{font-family:var(--fd);font-size:17px;letter-spacing:.03em}
+.atk{color:#FF6B6B}.def{color:#4ECDC4}.spd{color:#FFE66D}.int{color:var(--blue)}.sup{color:var(--g)}
+
+.c-sec{position:relative;z-index:2;background:rgba(0,0,0,.3);border-top:1px solid rgba(255,215,0,.12);padding:9px 15px;display:flex;align-items:flex-start;gap:9px}
+.sec-ico{width:32px;height:32px;flex-shrink:0;background:var(--s2);border:1px solid var(--goldb);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.sec-txt{font-size:11px;color:var(--w3);line-height:1.5;flex:1}
+.c-quote{position:relative;z-index:2;text-align:center;padding:8px 15px 10px;font-size:9px;letter-spacing:.13em;color:var(--gold);opacity:.55;font-style:italic;border-top:1px solid rgba(255,215,0,.08)}
+.c-actions{position:relative;z-index:2;display:flex;gap:8px;padding:10px 15px 14px;border-top:1px solid rgba(255,255,255,.05)}
+.btn-close{flex:1;background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:11px;color:var(--w3);font-family:var(--fd);font-size:15px;letter-spacing:.08em;padding:10px;cursor:pointer;transition:all .2s}
+.btn-close:hover{border-color:var(--redb);color:var(--red)}
+.btn-edit{flex:2;background:linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,215,0,.07));border:1px solid var(--goldb);border-radius:11px;color:var(--gold);font-family:var(--fd);font-size:15px;letter-spacing:.08em;padding:10px;cursor:pointer;transition:all .2s;display:none}
+.btn-edit:hover{box-shadow:0 0 18px rgba(255,215,0,.2);background:linear-gradient(135deg,rgba(255,215,0,.22),rgba(255,215,0,.1))}
+
+/* EDIT MODAL */
+.edit-ov{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(5px)}
+.edit-ov.open{opacity:1;pointer-events:all}
+.edit-box{background:var(--s1);border:1px solid var(--gb);border-radius:16px;padding:1.5rem;width:min(400px,92vw);max-height:88vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.edit-ttl{font-family:var(--fd);font-size:22px;letter-spacing:.08em;margin-bottom:.3rem}
+.edit-ttl span{color:var(--g)}
+.edit-note{font-family:var(--fc);font-size:10px;letter-spacing:.07em;color:var(--w3);background:var(--gbg);border:1px solid var(--gb);border-radius:8px;padding:8px 12px;margin:.8rem 0 1rem;line-height:1.6}
+.edit-note b{color:var(--g)}
+.eg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ef{display:flex;flex-direction:column;gap:5px}
+.ef.full{grid-column:1/-1}
+.ef-lbl{font-family:var(--fc);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--w3)}
+.ef-inp{background:var(--s2);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:9px 12px;font-size:13px;font-family:var(--fb);color:var(--w);width:100%;outline:none;transition:border-color .2s;appearance:none}
+.ef-inp:focus{border-color:var(--gb)}
+.ef-inp option{background:#111119}
+.edit-acts{display:flex;gap:8px;margin-top:1.2rem}
+.btn-cancel{flex:1;background:transparent;border:1px solid var(--br);border-radius:10px;color:var(--w3);font-family:var(--fd);font-size:15px;letter-spacing:.08em;padding:11px;cursor:pointer;transition:all .2s}
+.btn-cancel:hover{border-color:var(--redb);color:var(--red)}
+.btn-save{flex:2;background:linear-gradient(135deg,#00FF8C,#00CC70);color:#06060A;border:none;border-radius:10px;font-family:var(--fd);font-size:17px;letter-spacing:.1em;padding:11px;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(0,255,140,.25);display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-save:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(0,255,140,.35)}
+.btn-save:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.sv-spin{width:14px;height:14px;border:2px solid rgba(0,0,0,.2);border-top-color:#06060A;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--s1);border:1px solid var(--gb);border-radius:10px;padding:10px 20px;font-family:var(--fc);font-size:12.5px;letter-spacing:.06em;color:var(--w);z-index:999;transition:transform .3s;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.ok{color:var(--g);border-color:var(--gb)}
+.toast.err{color:var(--red);border-color:var(--redb)}
+@media(max-width:520px){
+  .tbl-head,.row{grid-template-columns:36px 1fr 105px 64px}
+  .search-wrap input{width:150px}
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+<div class="err-bar" id="errBar"><span>⚠</span><span id="errMsg"></span></div>
+
+<div class="hdr">
+  <div>
+    <div class="hdr-title">LIST <span>PEMAIN</span></div>
+    <div class="hdr-sub">Expert Handball Club · Live dari Google Sheets</div>
+  </div>
+  <div class="hdr-right">
+    <div class="search-wrap">
+      <span class="srch-ico">🔍</span>
+      <input type="text" id="srch" placeholder="Cari nama / posisi...">
+    </div>
+    <button class="btn-r" id="btnR" title="Refresh" onclick="loadPlayers(true)">↻</button>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="sv" id="sTot">—</div><div class="sl">Total Pemain</div></div>
+  <div class="stat"><div class="sv" id="sPos">—</div><div class="sl">Posisi Terbanyak</div></div>
+  <div class="stat"><div class="sv" id="sTB">—</div><div class="sl">Rata-rata TB (cm)</div></div>
+</div>
+
+<div class="tbl-wrap">
+  <div class="tbl-head">
+    <div class="th" style="cursor:default">#</div>
+    <div class="th" onclick="sortBy('namaLengkap')">NAMA</div>
+    <div class="th" onclick="sortBy('posisi')">POSISI</div>
+    <div class="th" onclick="sortBy('nomorPunggung')">NO</div>
+  </div>
+  <div id="list">
+    <div class="loading"><div class="spinner"></div>MENGHUBUNGKAN KE GOOGLE SHEETS...</div>
+  </div>
+</div>
+
+<!-- DIGIMON CARD MODAL -->
+<div class="overlay" id="overlay" onclick="maybeClose(event)">
+  <div class="card">
+    <div class="c-top">
+      <span class="c-club">Expert Handball Club</span>
+      <span class="c-lv" id="cLv">Lv.5 TAMER</span>
+    </div>
+    <div class="c-meta">
+      <div class="c-circle"><div class="c-clbl">NO</div><div class="c-cval" id="cNo">—</div></div>
+      <div class="c-dp"><div class="c-dpn" id="cDp">—</div><div class="c-dpl">DP</div></div>
+    </div>
+    <div class="c-hero">
+      <div class="c-glow"></div><div class="c-lightning"></div>
+      <div class="c-ava" id="cAva">?</div>
+    </div>
+    <div class="c-plate">
+      <div class="c-nick"><span id="cNick">THE PLAYER</span></div>
+      <div class="c-name" id="cName">PLAYER NAME</div>
+      <div class="c-types">
+        <span class="c-type" id="cT1">ULTIMATE</span>
+        <span class="c-sep">|</span>
+        <span class="c-type" id="cT2">VACCINE</span>
+        <span class="c-sep">|</span>
+        <span class="c-type">HUMAN</span>
+        <span style="flex:1"></span>
+        <span class="c-code" id="cCode">BT-EXP-01</span>
+        <span id="cRar" class="rar-sr">★ SR</span>
+      </div>
+    </div>
+
+    <!-- Data sheet langsung -->
+    <div class="c-info">
+      <div class="ci"><div class="ci-lbl">Tinggi / Berat</div><div class="ci-val" id="iTB">—</div></div>
+      <div class="ci"><div class="ci-lbl">Tanggal Lahir</div><div class="ci-val" id="iTL">—</div></div>
+      <div class="ci"><div class="ci-lbl">Sekolah / Kelas</div><div class="ci-val" id="iSek">—</div></div>
+      <div class="ci"><div class="ci-lbl">Asal</div><div class="ci-val" id="iAsal">—</div></div>
+      <div class="ci full"><div class="ci-lbl">Turnamen</div><div class="ci-val" id="iTurn">—</div></div>
+    </div>
+    <div class="c-stats">
+      <div class="sl"><span class="sl-ico">⚔️</span><span class="sl-nm">ATTACK</span><span class="sl-val atk" id="cAtk">—</span></div>
+      <div class="sl"><span class="sl-ico">🛡️</span><span class="sl-nm">DEFENSE</span><span class="sl-val def" id="cDef">—</span></div>
+      <div class="sl"><span class="sl-ico">⚡</span><span class="sl-nm">SPEED</span><span class="sl-val spd" id="cSpd">—</span></div>
+      <div class="sl"><span class="sl-ico">🧠</span><span class="sl-nm">INTEL</span><span class="sl-val int" id="cInt">—</span></div>
+      <div class="sl full"><span class="sl-ico">💚</span><span class="sl-nm">SUPPORT</span><span class="sl-val sup" id="cSup">—</span></div>
+    </div>
+    <div class="c-sec"><div class="sec-ico">🔒</div><div class="sec-txt" id="cSec">Kurangi DP lawan 3000.</div></div>
+    <div class="c-quote" id="cQuote">"WIN TOGETHER, EXPERT HANDBALL."</div>
+    <div class="c-actions">
+      <button class="btn-close" onclick="closeCard()">✕ TUTUP</button>
+      <button class="btn-edit" id="btnEdit" onclick="openEdit()">✏️ EDIT KARTU</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL (Admin) -->
+<div class="edit-ov" id="editOv">
+  <div class="edit-box">
+    <div class="edit-ttl">EDIT <span>KARTU</span></div>
+    <div class="edit-note">Data dasar (nama, posisi, TB, sekolah) ada di Google Sheet dari pendaftaran.<br>Di sini admin set <b>rating kartu Digimon</b> & motto pemain.</div>
+    <input type="hidden" id="eIdx">
+    <div class="eg">
+      <div class="ef"><div class="ef-lbl">No. Punggung</div><input class="ef-inp" id="eNo" type="number" min="1" max="99" placeholder="1–99"></div>
+      <div class="ef"><div class="ef-lbl">Rarity</div>
+        <select class="ef-inp" id="eRar">
+          <option value="SR">★ SR — Super Rare</option>
+          <option value="R">R — Rare</option>
+          <option value="C">C — Common</option>
+        </select>
+      </div>
+      <div class="ef"><div class="ef-lbl">ATK (0–9999)</div><input class="ef-inp" id="eAtk" type="number" min="0" max="9999"></div>
+      <div class="ef"><div class="ef-lbl">DEF (0–9999)</div><input class="ef-inp" id="eDef" type="number" min="0" max="9999"></div>
+      <div class="ef"><div class="ef-lbl">SPD (0–9999)</div><input class="ef-inp" id="eSpd" type="number" min="0" max="9999"></div>
+      <div class="ef"><div class="ef-lbl">INT (0–9999)</div><input class="ef-inp" id="eInt" type="number" min="0" max="9999"></div>
+      <div class="ef full"><div class="ef-lbl">SUP (0–9999)</div><input class="ef-inp" id="eSup" type="number" min="0" max="9999"></div>
+      <div class="ef full"><div class="ef-lbl">Motto / Quote</div><input class="ef-inp" id="eMotto" type="text" placeholder="Kata semangat pemain..."></div>
+    </div>
+    <div class="edit-acts">
+      <button class="btn-cancel" onclick="closeEdit()">BATAL</button>
+      <button class="btn-save" id="btnSave" onclick="saveEdit()">
+        <div class="sv-spin" id="svSpin"></div><span id="svTxt">SIMPAN KARTU</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// GAS_URL — dari form.html (sama persis)
+// Kolom sheet: timestamp | namaLengkap | namaPanggilan | tempatLahir | tanggalLahir
+//              | tinggiBadan | beratBadan | nomorHp | namaSekolah | kelasTingkat
+//              | alamat | posisi | nomorPunggung | turnamen
+//              + fotoBase64 (opsional, GAS simpan ke Drive dan return fotoUrl)
+// Kolom tambahan admin: ratingAtk | ratingDef | ratingSpd | ratingInt | ratingSup | rarity | motto
+// ══════════════════════════════════════════════════
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbxpso6RufxzeqmM_YenaScIGUW5yyRcuTQalN5JKCoZoYUUlifn973IY8apN65mvCCQ/exec';
+
+var all = [], filtered = [];
+var sortField = '', sortDir = 1;
+var curIdx = -1;
+var role = 'guest';
+
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.type === 'initRole') {
+    role = e.data.role || 'guest';
+    applyRole();
+  }
+});
+applyRole();
+function applyRole() {
+  document.getElementById('btnEdit').style.display = role === 'admin' ? 'block' : 'none';
+}
+
+// ══ LOAD DATA ══
+// GAS harus handle: ?action=getPlayers
+// Return: { status:'ok', players:[{ namaLengkap, namaPanggilan, tempatLahir,
+//           tanggalLahir, tinggiBadan, beratBadan, nomorHp, namaSekolah,
+//           kelasTingkat, alamat, posisi, nomorPunggung, turnamen,
+//           fotoUrl (optional), ratingAtk, ratingDef, ratingSpd,
+//           ratingInt, ratingSup, rarity, motto }, ...] }
+async function loadPlayers(refresh) {
+  var el = document.getElementById('list');
+  var btn = document.getElementById('btnR');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div>' + (refresh ? 'MEMPERBARUI...' : 'MENGHUBUNGKAN KE GOOGLE SHEETS...') + '</div>';
+  btn.classList.add('spinning');
+  hideErr();
+  try {
+    var res = await fetch(GAS_URL + '?action=getPlayers&t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    var data = await res.json();
+    if (data.status === 'ok' && Array.isArray(data.players) && data.players.length) {
+      all = data.players;
+    } else if (Array.isArray(data) && data.length) {
+      all = data;
+    } else {
+      throw new Error(data.message || 'Data kosong dari sheet');
+    }
+  } catch(e) {
+    all = demoData();
+    showErr('Tidak bisa konek ke Google Sheets (' + e.message + '). Tampil data demo. Tambahkan handler action=getPlayers di GAS.');
+  }
+  btn.classList.remove('spinning');
+  render();
+}
+
+// ══ RENDER ══
+function render() {
+  var q = document.getElementById('srch').value.toLowerCase().trim();
+  filtered = all.filter(function(p) {
+    return !q || (p.namaLengkap||'').toLowerCase().includes(q) || (p.namaPanggilan||'').toLowerCase().includes(q) || (p.posisi||'').toLowerCase().includes(q);
+  });
+  if (sortField) {
+    filtered.sort(function(a, b) {
+      var av = a[sortField]||'', bv = b[sortField]||'';
+      var an = parseFloat(av), bn = parseFloat(bv);
+      if (!isNaN(an) && !isNaN(bn)) return (an - bn) * sortDir;
+      return String(av).localeCompare(String(bv)) * sortDir;
+    });
+  }
+  // Stats
+  document.getElementById('sTot').textContent = filtered.length;
+  var pc = {};
+  filtered.forEach(function(p) { (p.posisi||'').split(',').forEach(function(v) { var t = v.trim(); if(t) pc[t]=(pc[t]||0)+1; }); });
+  var top = Object.entries(pc).sort(function(a,b){return b[1]-a[1];})[0];
+  document.getElementById('sPos').textContent = top ? top[0].replace('Goalkeeper','GK').replace(' Wing','W').replace('Back','Bk') : '—';
+  var tbs = filtered.map(function(p){return parseFloat(p.tinggiBadan)||0;}).filter(Boolean);
+  document.getElementById('sTB').textContent = tbs.length ? Math.round(tbs.reduce(function(a,b){return a+b;},0)/tbs.length) : '—';
+
+  var el = document.getElementById('list');
+  if (!filtered.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-ico">👥</div><div class="empty-txt">Tidak ada pemain ditemukan</div></div>';
+    return;
+  }
+  el.innerHTML = filtered.map(function(p, i) {
+    var ava = p.fotoUrl ? '<img src="'+p.fotoUrl+'" alt="">' : (p.namaLengkap||'?')[0].toUpperCase();
+    var pos = (p.posisi||'—').split(',')[0].trim();
+    return '<div class="row" onclick="showCard('+i+')">'
+      + '<div class="td rno">'+(i+1)+'</div>'
+      + '<div class="td rname-wrap"><div class="ava">'+ava+'</div>'
+      + '<div><div class="rname">'+(p.namaLengkap||'—')+'</div>'
+      + (p.namaPanggilan ? '<div class="rnick">'+p.namaPanggilan+'</div>' : '')
+      + '</div></div>'
+      + '<div class="td"><span class="pos-tag">'+pos+'</span></div>'
+      + '<div class="td rno-p">'+(p.nomorPunggung ? '#'+p.nomorPunggung : '—')+'</div>'
+      + '</div>';
+  }).join('');
+}
+
+function sortBy(f) {
+  sortDir = (sortField===f) ? sortDir*-1 : 1;
+  sortField = f;
+  render();
+}
+document.getElementById('srch').addEventListener('input', render);
+
+// ══ CARD HELPERS ══
+var TYPE_MAP = {'Pivot':'MEGA','Center':'MEGA','Left Wing':'CHAMPION','Right Wing':'CHAMPION','Goalkeeper':'ULTIMATE','Left Back':'ARMOR','Right Back':'ARMOR'};
+var CAT_MAP  = {'Pivot':'VACCINE','Center':'DATA','Left Wing':'DATA','Right Wing':'DATA','Goalkeeper':'VACCINE','Left Back':'VIRUS','Right Back':'VIRUS'};
+
+var SEC_MAP  = {'Pivot':'Kurangi DP lawan 3000 untuk ronde ini.','Center':'Suspensi 1 pemain lawan hingga akhir ronde.','Left Wing':'Tambah 2000 DP ke semua pemain [EXPERT].','Right Wing':'Tambah 2000 DP ke semua pemain [EXPERT].','Goalkeeper':'Batalkan serangan pertama lawan ronde ini.','Left Back':'Semua pemain lawan kehilangan 1000 DP.','Right Back':'Semua pemain lawan kehilangan 1000 DP.'};
+
+function calcDP(p) {
+  var a=+(p.ratingAtk||0),d=+(p.ratingDef||0),s=+(p.ratingSpd||0),i=+(p.ratingInt||0),u=+(p.ratingSup||0);
+  if (a+d+s+i+u>0) return Math.round((a+d+s+i+u)/5)*10;
+  var tb=parseFloat(p.tinggiBadan)||170,bb=parseFloat(p.beratBadan)||70;
+  return Math.round(tb*30+bb*20+4000);
+}
+function calcLv(p) {
+  var avg=((+(p.ratingAtk||0))+(+(p.ratingDef||0))+(+(p.ratingSpd||0))+(+(p.ratingInt||0))+(+(p.ratingSup||0)))/5;
+  if (!avg) avg=(parseFloat(p.tinggiBadan)||170)*40;
+  if(avg>=8500)return'Lv.6'; if(avg>=7500)return'Lv.5'; if(avg>=6500)return'Lv.4'; if(avg>=5000)return'Lv.3'; return'Lv.2';
+}
+function sv(raw, fb) { return (raw && +raw>0) ? Number(raw).toLocaleString() : String(Math.round(fb)); }
+
+// ══ SHOW CARD ══
+function showCard(idx) {
+  curIdx = idx;
+  var p = filtered[idx];
+  var pos = (p.posisi||'').split(',')[0].trim();
+
+  // Avatar
+  var avaEl = document.getElementById('cAva');
+  if (p.fotoUrl) {
+    avaEl.innerHTML = '<img src="'+p.fotoUrl+'" alt="">';
+  } else {
+    var ini = (p.namaLengkap||'?').split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();
+    avaEl.textContent = ini;
+  }
+
+  document.getElementById('cLv').textContent  = calcLv(p)+' TAMER';
+  document.getElementById('cNo').textContent   = p.nomorPunggung||'?';
+  document.getElementById('cDp').textContent   = calcDP(p).toLocaleString();
+  document.getElementById('cNick').textContent = p.namaPanggilan ? '"'+p.namaPanggilan.toUpperCase()+'"' : 'THE PLAYER';
+  document.getElementById('cName').textContent = (p.namaLengkap||'').toUpperCase();
+  document.getElementById('cT1').textContent   = TYPE_MAP[pos]||'ULTIMATE';
+  document.getElementById('cT2').textContent   = CAT_MAP[pos]||'VACCINE';
+  document.getElementById('cCode').textContent = 'BT-EXP-'+String(idx+1).padStart(2,'0');
+
+  var r = p.rarity||'R';
+  var rarEl = document.getElementById('cRar');
+  rarEl.textContent = r==='SR'?'★ SR':r==='R'?'★ R':'C';
+  rarEl.className   = r==='SR'?'rar-sr':'rar-r';
+
+
+
+  // Info dari sheet
+  var tb=parseFloat(p.tinggiBadan)||0, bb=parseFloat(p.beratBadan)||0;
+  document.getElementById('iTB').textContent   = (tb?tb+'cm':'—')+' / '+(bb?bb+'kg':'—');
+  document.getElementById('iTL').textContent   = p.tanggalLahir ? fmtDate(p.tanggalLahir) : '—';
+  document.getElementById('iSek').textContent  = [p.namaSekolah,p.kelasTingkat].filter(Boolean).join(' · ')||'—';
+  document.getElementById('iAsal').textContent = [p.tempatLahir,p.alamat].filter(Boolean).join(', ')||'—';
+  document.getElementById('iTurn').textContent = (p.turnamen||'—').replace(/\|/g,'·');
+
+  // Stats
+  document.getElementById('cAtk').textContent = sv(p.ratingAtk, tb*47);
+  document.getElementById('cDef').textContent = sv(p.ratingDef, bb*89);
+  document.getElementById('cSpd').textContent = sv(p.ratingSpd, tb*41);
+  document.getElementById('cInt').textContent = sv(p.ratingInt, tb*45);
+  document.getElementById('cSup').textContent = sv(p.ratingSup, bb*94);
+
+  document.getElementById('cSec').textContent   = SEC_MAP[pos]||'Efek pertahanan aktif.';
+  document.getElementById('cQuote').textContent = '"'+(p.motto||'WIN TOGETHER, EXPERT HANDBALL.')+'"';
+
+  document.getElementById('overlay').classList.add('open');
+}
+function maybeClose(e) { if(e.target===document.getElementById('overlay')) closeCard(); }
+function closeCard()  { document.getElementById('overlay').classList.remove('open'); }
+function fmtDate(d)   { try{ var p=d.split('-'); return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:d; }catch(e){return d;} }
+
+// ══ EDIT (admin) ══
+function openEdit() {
+  if (role !== 'admin') { toast('⛔ Hanya admin yang bisa mengedit kartu', 'err'); return; }
+  if(curIdx<0) return;
+  var p = filtered[curIdx];
+  document.getElementById('eIdx').value   = curIdx;
+  document.getElementById('eNo').value    = p.nomorPunggung||'';
+  document.getElementById('eRar').value   = p.rarity||'R';
+  document.getElementById('eAtk').value   = p.ratingAtk||'';
+  document.getElementById('eDef').value   = p.ratingDef||'';
+  document.getElementById('eSpd').value   = p.ratingSpd||'';
+  document.getElementById('eInt').value   = p.ratingInt||'';
+  document.getElementById('eSup').value   = p.ratingSup||'';
+  document.getElementById('eMotto').value = p.motto||'';
+  closeCard();
+  document.getElementById('editOv').classList.add('open');
+}
+function closeEdit() { document.getElementById('editOv').classList.remove('open'); }
+
+async function saveEdit() {
+  var idx = parseInt(document.getElementById('eIdx').value);
+  var p   = filtered[idx];
+  var pay = {
+    action:'updatePlayerCard',
+    nomorHp: p.nomorHp,                          // key untuk identify row di GAS
+    nomorPunggung: document.getElementById('eNo').value,
+    rarity:  document.getElementById('eRar').value,
+    ratingAtk: +document.getElementById('eAtk').value||0,
+    ratingDef: +document.getElementById('eDef').value||0,
+    ratingSpd: +document.getElementById('eSpd').value||0,
+    ratingInt: +document.getElementById('eInt').value||0,
+    ratingSup: +document.getElementById('eSup').value||0,
+    motto: document.getElementById('eMotto').value.trim()
+  };
+  document.getElementById('btnSave').disabled     = true;
+  document.getElementById('svSpin').style.display = 'block';
+  document.getElementById('svTxt').textContent    = 'MENYIMPAN...';
+  try {
+    var res  = await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(pay)});
+    var data = await res.json();
+    if(data.status!=='ok') throw new Error(data.message||'Gagal');
+    Object.assign(filtered[idx],pay);
+    var gi = all.findIndex(function(x){return x.nomorHp===p.nomorHp;});
+    if(gi>=0) Object.assign(all[gi],pay);
+    toast('✓ Kartu '+p.namaLengkap+' diperbarui','ok');
+    closeEdit(); render();
+    setTimeout(function(){showCard(idx);},150);
+  } catch(e) {
+    toast('❌ Gagal: '+e.message,'err');
+  } finally {
+    document.getElementById('btnSave').disabled     = false;
+    document.getElementById('svSpin').style.display = 'none';
+    document.getElementById('svTxt').textContent    = 'SIMPAN KARTU';
+  }
+}
+
+function toast(msg,type) {
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+(type||'');
+  setTimeout(function(){t.classList.add('show');},10);
+  setTimeout(function(){t.classList.remove('show');},3200);
+}
+function showErr(msg) { document.getElementById('errMsg').textContent=msg; document.getElementById('errBar').classList.add('show'); }
+function hideErr()    { document.getElementById('errBar').classList.remove('show'); }
+
+// ══ DEMO DATA — key persis dari form.html ══
+function demoData() {
+  return [
+    {namaLengkap:'Ahmad Rizki',namaPanggilan:'Rizki',tempatLahir:'Jakarta',tanggalLahir:'2002-05-14',tinggiBadan:'175',beratBadan:'68',nomorHp:'08120001',namaSekolah:'SMA N 1 Jakarta',kelasTingkat:'XII',alamat:'Jaksel',posisi:'Pivot',nomorPunggung:'7',turnamen:'Popda 2024 | Regional 2023',ratingAtk:8500,ratingDef:6200,ratingSpd:7100,ratingInt:8000,ratingSup:7500,rarity:'SR',motto:'Tekanan adalah hak istimewa.'},
+    {namaLengkap:'Budi Santoso',namaPanggilan:'Budi',tempatLahir:'Bandung',tanggalLahir:'2004-03-22',tinggiBadan:'180',beratBadan:'72',nomorHp:'08120002',namaSekolah:'SMA N 3 Bandung',kelasTingkat:'X',alamat:'Bandung',posisi:'Left Wing',nomorPunggung:'11',turnamen:'Popda 2024',ratingAtk:9100,ratingDef:5800,ratingSpd:8900,ratingInt:7200,ratingSup:6800,rarity:'SR',motto:'Kecepatan adalah senjataku.'},
+    {namaLengkap:'Citra Dewi',namaPanggilan:'Citra',tempatLahir:'Surabaya',tanggalLahir:'2000-11-08',tinggiBadan:'170',beratBadan:'58',nomorHp:'08120003',namaSekolah:'Univ Airlangga',kelasTingkat:'S1',alamat:'Surabaya',posisi:'Goalkeeper',nomorPunggung:'1',turnamen:'Liga Kota 2024 | Regional 2024',ratingAtk:5500,ratingDef:9200,ratingSpd:7600,ratingInt:8500,ratingSup:8200,rarity:'SR',motto:'Tak ada gol yang lolos.'},
+    {namaLengkap:'Dimas Pratama',namaPanggilan:'Dimas',tempatLahir:'Yogyakarta',tanggalLahir:'1998-07-30',tinggiBadan:'183',beratBadan:'78',nomorHp:'08120004',namaSekolah:'Univ Gadjah Mada',kelasTingkat:'S1',alamat:'Sleman',posisi:'Center',nomorPunggung:'5',turnamen:'Popda 2023 | Liga 2024 | Regional 2024',ratingAtk:8200,ratingDef:7100,ratingSpd:7400,ratingInt:8800,ratingSup:9000,rarity:'SR',motto:'Tim adalah segalanya.'},
+    {namaLengkap:'Eka Nugraha',namaPanggilan:'Eka',tempatLahir:'Medan',tanggalLahir:'2005-01-15',tinggiBadan:'172',beratBadan:'65',nomorHp:'08120005',namaSekolah:'SMA N 2 Medan',kelasTingkat:'XI',alamat:'Medan',posisi:'Right Back',nomorPunggung:'9',turnamen:'Popda 2024',ratingAtk:7800,ratingDef:6600,ratingSpd:8200,ratingInt:7000,ratingSup:7200,rarity:'R',motto:'Muda dan berbahaya.'},
+    {namaLengkap:'Fajar Ramadhan',namaPanggilan:'Fajar',tempatLahir:'Semarang',tanggalLahir:'2001-09-12',tinggiBadan:'178',beratBadan:'73',nomorHp:'08120006',namaSekolah:'Univ Diponegoro',kelasTingkat:'S1',alamat:'Tembalang',posisi:'Left Back',nomorPunggung:'4',turnamen:'Liga Kota 2024',ratingAtk:8000,ratingDef:7500,ratingSpd:7800,ratingInt:7600,ratingSup:7900,rarity:'R',motto:'Konsisten adalah kunci.'},
+    {namaLengkap:'Gilang Saputra',namaPanggilan:'Gilang',tempatLahir:'Makassar',tanggalLahir:'2003-06-20',tinggiBadan:'176',beratBadan:'70',nomorHp:'08120007',namaSekolah:'SMA N 1 Makassar',kelasTingkat:'XII',alamat:'Makassar',posisi:'Right Wing',nomorPunggung:'14',turnamen:'Popda 2024 | Regional 2024',ratingAtk:8700,ratingDef:5900,ratingSpd:9100,ratingInt:7000,ratingSup:6500,rarity:'R',motto:'Sayap kanan tak pernah tidur.'}
+  ];
+}
+
+loadPlayers(false);
+</script>
+</body>
+</html>
