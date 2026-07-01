@@ -456,7 +456,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 // =============================================
 // GANTI DENGAN URL APPS SCRIPT KAMU
 // =============================================
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbwnlVrAmgeNUKF0rNX1uen8_VDQezJInKDMqxzKh8X19GWFge3zUfxaiQAGbjhdy3_ETQ/exec';
+var GAS_URL = '';
 
 var selectedRole = 'admin';
 
@@ -788,8 +788,8 @@ function forgotPin() {
   </div>
   </div>
   <div class="page" id="page-players">
-  <iframe id="playersIframe" src="players.html" ...></iframe>
-</div>
+    <iframe id="playersIframe" src="players.html" scrolling="no" style="display:block;width:100%;min-height:100vh;border:none;" onload="this.style.height=this.contentDocument.body.scrollHeight+20+'px'; sendPlayersRole();"></iframe>
+  </div>
   </div>
   <div class="page" id="page-report"></div>
   </div>
@@ -1124,8 +1124,20 @@ window.addEventListener('message',function(e){
   if(e.data&&e.data.type==='iframeHeight'){
     var f=document.getElementById('formIframe');
     if(f) f.style.height=(e.data.height+20)+'px';
+    var pf=document.getElementById('playersIframe');
+    if(pf) pf.style.height=(e.data.height+20)+'px';
   }
 });
+
+/* Kirim role (admin/guest) ke players.html setiap kali iframe-nya dimuat ulang */
+// currentUserRole harus diset di tempat lain saat login (default 'admin' untuk demo)
+var currentUserRole = window.currentUserRole || 'admin';
+function sendPlayersRole(){
+  var pf = document.getElementById('playersIframe');
+  if(pf && pf.contentWindow){
+    pf.contentWindow.postMessage({ type:'initRole', role: currentUserRole }, '*');
+  }
+}
 
 /* SHOOTING STARS */
 (function(){
