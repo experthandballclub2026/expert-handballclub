@@ -167,7 +167,10 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 </style>
 </head>
 <body>
+<canvas id="bgCanvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
 
+<div class="wrap"></div>
+  
 <div class="toast" id="toast"></div>
 <div class="err-bar" id="errBar"><span>⚠</span><span id="errMsg"></span></div>
 
