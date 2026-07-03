@@ -240,6 +240,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 .page.active{display:block}
 #page-form.active{padding:0!important;margin:0!important;}
 #page-form iframe{display:block;width:100%;border:none;}
+#page-players.active{padding:0!important;margin:0!important;}
+#page-players iframe{display:block;width:100%;border:none;}
 
 /* ── HOME PAGE ── */
 .home-greeting{margin-bottom:1.5rem}
@@ -787,7 +789,9 @@ function forgotPin() {
     <iframe id="formIframe" src="form.html" scrolling="no" style="display:block;width:100%;min-height:100vh;border:none;" onload="this.style.height=this.contentDocument.body.scrollHeight+20+'px'"></iframe>
   </div>
   </div>
-  <div class="page" id="page-players"></div>
+  <div class="page" id="page-players">
+    <iframe id="playersIframe" src="players.html" scrolling="no" style="display:block;width:100%;min-height:100vh;border:none;" onload="this.style.height=this.contentDocument.body.scrollHeight+20+'px';"></iframe>
+  </div>
   </div>
   <div class="page" id="page-report"></div>
   </div>
