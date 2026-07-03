@@ -320,10 +320,13 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
   margin-top:var(--header)!important;
   padding:0!important;
   position:relative;z-index:1;
+  overflow:hidden;
+  width:calc(100vw - var(--sidebar));
 }
 
 /* PAGE default padding */
 .page{display:none;padding:1.5rem;}
+#page-players.active{padding:0!important;}
 
 /* FORM PAGE - no padding, iframe fills all */
 
