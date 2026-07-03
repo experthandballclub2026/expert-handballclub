@@ -15,7 +15,8 @@
   --fd:'Bebas Neue',cursive;--fb:'DM Sans',sans-serif;--fc:'Barlow Condensed',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;padding:1rem}
+body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;padding:0 1rem;margin:0;overflow-x:hidden}
+.wrap{padding:.75rem 1rem}
 
 /* HEADER */
 .hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1rem;gap:.5rem;flex-wrap:wrap}
@@ -167,13 +168,11 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 </style>
 </head>
 <body>
-<canvas id="bgCanvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
 
-<div class="wrap"></div>
-  
 <div class="toast" id="toast"></div>
 <div class="err-bar" id="errBar"><span>⚠</span><span id="errMsg"></span></div>
 
+<div class="wrap">
 <div class="hdr">
   <div>
     <div class="hdr-title">LIST <span>PEMAIN</span></div>
@@ -291,11 +290,6 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
   </div>
 </div>
 
-</div><!-- end wrap -->
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-  
 <script>
 // ══════════════════════════════════════════════════
 // GAS_URL — dari form.html (sama persis)
@@ -559,5 +553,6 @@ function demoData() {
 
 loadPlayers(false);
 </script>
+</div><!-- end .wrap -->
 </body>
 </html>
