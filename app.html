@@ -240,8 +240,6 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 .page.active{display:block}
 #page-form.active{padding:0!important;margin:0!important;}
 #page-form iframe{display:block;width:100%;border:none;}
-#page-players.active{padding:0!important;margin:0!important;}
-#page-players iframe{display:block;width:100%;border:none;}
 
 /* ── HOME PAGE ── */
 .home-greeting{margin-bottom:1.5rem}
@@ -789,9 +787,7 @@ function forgotPin() {
     <iframe id="formIframe" src="form.html" scrolling="no" style="display:block;width:100%;min-height:100vh;border:none;" onload="this.style.height=this.contentDocument.body.scrollHeight+20+'px'"></iframe>
   </div>
   </div>
-  <div class="page" id="page-players">
-    <iframe id="playersIframe" src="players.html" scrolling="no" style="display:block;width:100%;min-height:100vh;border:none;" onload="this.style.height=this.contentDocument.body.scrollHeight+20+'px'; sendPlayersRole();"></iframe>
-  </div>
+  <div class="page" id="page-players"></div>
   </div>
   <div class="page" id="page-report"></div>
   </div>
@@ -1126,20 +1122,8 @@ window.addEventListener('message',function(e){
   if(e.data&&e.data.type==='iframeHeight'){
     var f=document.getElementById('formIframe');
     if(f) f.style.height=(e.data.height+20)+'px';
-    var pf=document.getElementById('playersIframe');
-    if(pf) pf.style.height=(e.data.height+20)+'px';
   }
 });
-
-/* Kirim role (admin/guest) ke players.html setiap kali iframe-nya dimuat ulang */
-// currentUserRole harus diset di tempat lain saat login (default 'admin' untuk demo)
-var currentUserRole = window.currentUserRole || 'admin';
-function sendPlayersRole(){
-  var pf = document.getElementById('playersIframe');
-  if(pf && pf.contentWindow){
-    pf.contentWindow.postMessage({ type:'initRole', role: currentUserRole }, '*');
-  }
-}
 
 /* SHOOTING STARS */
 (function(){
