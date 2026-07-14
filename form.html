@@ -27,14 +27,14 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .hdr-sub{font-family:var(--fc);font-size:10px;font-weight:700;letter-spacing:.22em;color:var(--g);text-transform:uppercase;margin-top:6px;opacity:.75}
 .hdr-line{height:1px;background:linear-gradient(90deg,transparent 0%,var(--g) 50%,transparent 100%);margin-top:14px}
 
-/* Section (legacy) */
+/* Section */
 .sec-num-bg{position:absolute;right:.75rem;top:50%;transform:translateY(-50%);font-family:var(--fd);font-size:90px;color:rgba(0,255,140,.03);line-height:1;pointer-events:none;user-select:none}
 .sec-hdr{display:flex;align-items:center;gap:9px;margin-bottom:1.1rem}
 .sec-num{font-family:var(--fd);font-size:12px;color:var(--g);letter-spacing:.05em;border:1px solid var(--gb);border-radius:5px;padding:2px 8px;background:var(--gbg);box-shadow:0 0 8px rgba(0,255,140,.15)}
 .sec-title{font-family:var(--fc);font-size:15px;font-weight:700;color:var(--w);letter-spacing:.08em;text-transform:uppercase}
 .sl{color:var(--g);font-weight:300;margin:0 1px}
 
-/* Photo (legacy) */
+/* Photo */
 .upload-area{display:flex;flex-direction:column;align-items:center;padding:.5rem 0}
 .photo-ring{width:100px;height:100px;border-radius:50%;border:2px solid var(--gb);background:var(--s2);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:all .2s}
 .photo-ring:hover{border-color:var(--g);box-shadow:var(--gg)}
@@ -88,18 +88,11 @@ textarea{resize:vertical;min-height:64px}
 .flist{margin-top:8px;display:flex;flex-direction:column;gap:4px}
 .fitem{display:flex;align-items:center;gap:6px;background:var(--gbg);border:1px solid var(--gb);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--gd)}
 
-
-/* Card frame for sections */
+/* Card */
 .card{background:var(--s1);border:1px solid var(--br);border-radius:16px;padding:1.4rem 1.6rem;margin:0 0 12px 0;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.3)}
 .card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--g),rgba(0,255,140,.1));border-radius:3px 0 0 3px}
 
-
-
-/* Fields container - not full width */
-.fields{padding:0 .5rem}
-.card .g2{padding:0 .25rem}
-
-/* Mobile friendly inputs */
+/* Mobile */
 @media(max-width:480px){
   .g2{grid-template-columns:1fr}
   .full{grid-column:1}
@@ -135,14 +128,13 @@ textarea{resize:vertical;min-height:64px}
 .success-sub{font-family:var(--fc);font-size:13px;color:var(--w3);letter-spacing:.06em;margin-bottom:2rem}
 .reset-btn{background:transparent;border:1px solid var(--gb);border-radius:10px;color:var(--g);font-family:var(--fc);font-size:13px;letter-spacing:.08em;text-transform:uppercase;padding:12px 28px;cursor:pointer;transition:all .2s}
 .reset-btn:hover{background:var(--gbg);border-color:var(--g)}
-
 </style>
 </head>
 <body>
 
 <canvas id="bgCanvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
 
-<div class="wrap"></div>
+<div class="wrap">
 
   <!-- Main Form -->
   <div id="mainForm">
@@ -175,7 +167,6 @@ textarea{resize:vertical;min-height:64px}
         <div class="fg"><div class="lbl">Berat Badan <span class="req">*</span></div><div class="iw"><input type="number" id="beratBadan" placeholder="65" min="20" max="200"><span class="unit">kg</span></div></div>
         <div class="fg full"><div class="lbl">Nomor HP / WA <span class="req">*</span></div><input type="tel" id="nomorHp" placeholder="08xx-xxxx-xxxx"></div>
       </div>
-      </div>
     </div>
 
     <!-- 03 Asal Sekolah -->
@@ -185,7 +176,6 @@ textarea{resize:vertical;min-height:64px}
       <div class="g2">
         <div class="fg full"><div class="lbl">Nama Sekolah <span class="req">*</span></div><input type="text" id="namaSekolah" placeholder="SD / SMP / SMA / SMK / Perguruan Tinggi"></div>
         <div class="fg full"><div class="lbl">Kelas / Tingkat</div><input type="text" id="kelasTingkat" placeholder="Contoh: Kelas 8, Semester 3"></div>
-      </div>
       </div>
     </div>
 
@@ -209,7 +199,6 @@ textarea{resize:vertical;min-height:64px}
           <div class="pos-tags" id="posTags"></div>
         </div>
         <div class="fg"><div class="lbl">Nomor Punggung <span class="req">*</span></div><input type="number" id="nomorPunggung" placeholder="1 – 99" min="1" max="99"></div>
-      </div>
       </div>
     </div>
 
@@ -241,10 +230,10 @@ textarea{resize:vertical;min-height:64px}
 
     <!-- Submit -->
     <div class="sub-wrap">
-      <button type="button" class="sub-btn" id="submitBtn" onclick="submitForm()">
+      <button type="button" class="sub-btn" id="submitBtn" onclick="handleSubmit()">
         <span id="btnContent">SIMPAN DATA PEMAIN →</span>
       </button>
-      <div class="foot">Data tersimpan ke Google Sheets · Foto & sertifikat ke Google Drive</div>
+      <div class="foot">Data tersimpan aman · Foto & sertifikat ke Drive</div>
     </div>
 
   </div><!-- end mainForm -->
@@ -253,7 +242,7 @@ textarea{resize:vertical;min-height:64px}
   <div class="success-state" id="successState">
     <div class="success-icon">✅</div>
     <div class="success-title">DATA TERSIMPAN!</div>
-    <div class="success-sub" id="successSub">Data berhasil ditambahkan ke Google Sheets.</div>
+    <div class="success-sub" id="successSub">Data berhasil disimpan.</div>
     <button class="reset-btn" onclick="resetForm()">+ Daftarkan Pemain Lain</button>
   </div>
 
@@ -376,7 +365,7 @@ function validate() {
       return false;
     }
   }
-  var posisi = Array.from(document.querySelectorAll('.pp.on')).map(function(p) { return p.textContent.trim(); });
+  var posisi = Array.from(document.querySelectorAll('.pp.on'));
   if (posisi.length === 0) {
     showToast('⚠ Pilih minimal 1 posisi', 'err');
     return false;
@@ -384,13 +373,15 @@ function validate() {
   return true;
 }
 
-// Submit
-async function submitForm() {
+// =============================================
+// FIX UTAMA: Submit tanpa baca response.json()
+// karena mode: no-cors → response selalu opaque
+// =============================================
+async function handleSubmit() {
   if (!validate()) return;
 
-  var gasUrl = GAS_URL;
-  if (!gasUrl) {
-    showToast('⚠ GAS_URL belum diisi di kode', 'err');
+  if (!GAS_URL) {
+    showToast('⚠ GAS_URL belum diisi', 'err');
     return;
   }
 
@@ -404,11 +395,14 @@ async function submitForm() {
     var ts = now.toLocaleDateString('id-ID', {day:'2-digit',month:'2-digit',year:'numeric'})
             + ' ' + now.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'});
 
-    var posisi = Array.from(document.querySelectorAll('.pp.on')).map(function(p) { return p.textContent.trim(); }).join(', ');
-    var turnamen = Array.from(document.querySelectorAll('#tlist input')).map(function(i) { return i.value.trim(); }).filter(Boolean).join(' | ');
+    var posisi = Array.from(document.querySelectorAll('.pp.on'))
+                      .map(function(p){ return p.textContent.trim(); }).join(', ');
+    var turnamen = Array.from(document.querySelectorAll('#tlist input'))
+                        .map(function(i){ return i.value.trim(); })
+                        .filter(Boolean).join(' | ');
 
     var payload = {
-    action:        'submitForm',
+      action:        'submitForm',
       timestamp:     ts,
       namaLengkap:   document.getElementById('namaLengkap').value.trim(),
       namaPanggilan: document.getElementById('namaPanggilan').value.trim(),
@@ -425,7 +419,7 @@ async function submitForm() {
       turnamen:      turnamen
     };
 
-    // Convert foto & sertifikat ke base64
+    // Foto ke base64
     var photoInput = document.getElementById('photoInput');
     if (photoInput.files && photoInput.files[0]) {
       payload.fotoBase64 = await toBase64(photoInput.files[0]);
@@ -433,6 +427,7 @@ async function submitForm() {
       payload.fotoMime   = photoInput.files[0].type;
     }
 
+    // Sertifikat ke base64
     if (certFiles.length > 0) {
       var certs = [];
       for (var i = 0; i < certFiles.length; i++) {
@@ -447,25 +442,23 @@ async function submitForm() {
 
     var savedName = payload.namaLengkap;
 
-    var response = await fetch(gasUrl, {
-  method: 'POST',
-  mode: 'no-cors',        // ← TAMBAHKAN INI
-  headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-  body: JSON.stringify(payload)
-});
+    // Kirim ke GAS — mode no-cors: TIDAK bisa baca response (normal)
+    await fetch(GAS_URL, {
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body:    JSON.stringify(payload)
+    });
 
-    var result = await response.json();
-
-    if (result.status === 'ok') {
-      document.getElementById('mainForm').style.display = 'none';
-      document.getElementById('successState').style.display = 'block';
-      document.getElementById('successSub').textContent = 'Data ' + savedName + ' berhasil disimpan ke Google Sheets.';
-    } else {
-      throw new Error(result.message || 'Gagal menyimpan');
-    }
+    // Kalau sampai sini tanpa error = request berhasil terkirim
+    // Cek Google Sheets untuk konfirmasi data masuk
+    document.getElementById('mainForm').style.display = 'none';
+    document.getElementById('successState').style.display = 'block';
+    document.getElementById('successSub').textContent =
+      'Data ' + savedName + ' berhasil disimpan.';
 
   } catch(err) {
-    showToast('❌ Gagal: ' + err.message, 'err');
+    showToast('❌ Gagal mengirim: ' + err.message, 'err');
     btn.disabled = false;
     btnContent.textContent = 'SIMPAN DATA PEMAIN →';
   }
@@ -475,10 +468,12 @@ async function submitForm() {
 function resetForm() {
   document.getElementById('mainForm').style.display = 'block';
   document.getElementById('successState').style.display = 'none';
-  document.getElementById('mainForm').querySelectorAll('input:not([type=file]), textarea').forEach(function(el) { el.value = ''; });
-  document.querySelectorAll('.pp.on').forEach(function(p) { p.classList.remove('on'); });
+  document.getElementById('mainForm').querySelectorAll('input:not([type=file]), textarea')
+    .forEach(function(el){ el.value = ''; });
+  document.querySelectorAll('.pp.on').forEach(function(p){ p.classList.remove('on'); });
   document.getElementById('posTags').innerHTML = '';
-  document.getElementById('tlist').innerHTML = '<div class="ti"><input type="text" placeholder="Nama turnamen · Tahun · Hasil/Peringkat"><div class="tdel" onclick="delT(this)">✕</div></div>';
+  document.getElementById('tlist').innerHTML =
+    '<div class="ti"><input type="text" placeholder="Nama turnamen · Tahun · Hasil/Peringkat"><div class="tdel" onclick="delT(this)">✕</div></div>';
   document.getElementById('flist').innerHTML = '';
   certFiles = [];
   document.getElementById('pPrev').style.display = 'none';
@@ -495,7 +490,6 @@ function resetForm() {
   var canvas = document.getElementById('bgCanvas');
   var ctx = canvas.getContext('2d');
   var W, H;
-
   function resize(){
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
@@ -503,7 +497,6 @@ function resetForm() {
   resize();
   window.addEventListener('resize', resize);
 
-  // --- SHOOTING STARS ---
   var stars = [];
   function spawnStar(){
     stars.push({
@@ -512,14 +505,11 @@ function resetForm() {
       len: 80 + Math.random() * 120,
       speed: 6 + Math.random() * 8,
       angle: Math.PI / 5,
-      alpha: 1,
-      trail: []
+      alpha: 1
     });
   }
   setInterval(spawnStar, 1800);
   spawnStar();
-
-
 
   function drawStars(){
     stars = stars.filter(function(s){ return s.alpha > 0.01; });
@@ -540,7 +530,6 @@ function resetForm() {
       ctx.strokeStyle = grd;
       ctx.lineWidth = 2;
       ctx.stroke();
-      // Star head dot
       ctx.beginPath();
       ctx.arc(s.x, s.y, 2, 0, Math.PI*2);
       ctx.fillStyle = 'rgba(255,255,255,' + s.alpha + ')';
@@ -556,6 +545,7 @@ function resetForm() {
   animate();
 })();
 </script>
+
 <script>
 function sendHeight(){
   window.parent.postMessage({type:'iframeHeight',height:document.body.scrollHeight},'*');

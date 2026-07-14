@@ -33,12 +33,11 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 .btn-r.spinning{animation:spin .7s linear infinite}
 
 /* STATS */
-  
 .stats{display:flex;gap:10px;margin-bottom:1.2rem;flex-wrap:wrap}
 .stat{background:var(--s1);border:1px solid var(--br);border-radius:12px;padding:.75rem 1.1rem;flex:1;min-width:110px;position:relative;overflow:hidden}
 .stat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--g),transparent)}
 .sv{font-family:var(--fd);font-size:24px;color:var(--g);line-height:1}
-.sl{font-family:var(--fc);font-size:9px;letter-spacing:.14em;color:var(--w3);text-transform:uppercase;margin-top:2px}
+.sl-stat{font-family:var(--fc);font-size:9px;letter-spacing:.14em;color:var(--w3);text-transform:uppercase;margin-top:2px}
 
 /* TABLE */
 .tbl-wrap{background:var(--s1);border:1px solid var(--br);border-radius:16px;overflow:hidden}
@@ -104,8 +103,6 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 .c-code{font-size:8.5px;letter-spacing:.08em;color:var(--w3);opacity:.45}
 .rar-sr{font-family:var(--fd);font-size:13px;color:var(--gold)}
 .rar-r{font-family:var(--fd);font-size:13px;color:var(--w2)}
-
-
 
 /* Info dari Google Sheet */
 .c-info{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.05)}
@@ -187,9 +184,9 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 </div>
 
 <div class="stats">
-  <div class="stat"><div class="sv" id="sTot">—</div><div class="sl">Total Pemain</div></div>
-  <div class="stat"><div class="sv" id="sPos">—</div><div class="sl">Posisi Terbanyak</div></div>
-  <div class="stat"><div class="sv" id="sTB">—</div><div class="sl">Rata-rata TB (cm)</div></div>
+  <div class="stat"><div class="sv" id="sTot">—</div><div class="sl-stat">Total Pemain</div></div>
+  <div class="stat"><div class="sv" id="sPos">—</div><div class="sl-stat">Posisi Terbanyak</div></div>
+  <div class="stat"><div class="sv" id="sTB">—</div><div class="sl-stat">Rata-rata TB (cm)</div></div>
 </div>
 
 <div class="tbl-wrap">
@@ -200,7 +197,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
     <div class="th" onclick="sortBy('nomorPunggung')">NO</div>
   </div>
   <div id="list">
-    <div class="loading"><div class="spinner"></div>MENGHUBUNGKAN KE GOOGLE SHEETS...</div>
+    <div class="loading"><div class="spinner"></div>MENGHUBUNGKAN KE SERVER...</div>
   </div>
 </div>
 
@@ -234,7 +231,6 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
       </div>
     </div>
 
-    <!-- Data sheet langsung -->
     <div class="c-info">
       <div class="ci"><div class="ci-lbl">Tinggi / Berat</div><div class="ci-val" id="iTB">—</div></div>
       <div class="ci"><div class="ci-lbl">Tanggal Lahir</div><div class="ci-val" id="iTL">—</div></div>
@@ -290,14 +286,6 @@ body{font-family:var(--fb);background:var(--bg);color:var(--w);min-height:100vh;
 </div>
 
 <script>
-// ══════════════════════════════════════════════════
-// GAS_URL — dari form.html (sama persis)
-// Kolom sheet: timestamp | namaLengkap | namaPanggilan | tempatLahir | tanggalLahir
-//              | tinggiBadan | beratBadan | nomorHp | namaSekolah | kelasTingkat
-//              | alamat | posisi | nomorPunggung | turnamen
-//              + fotoBase64 (opsional, GAS simpan ke Drive dan return fotoUrl)
-// Kolom tambahan admin: ratingAtk | ratingDef | ratingSpd | ratingInt | ratingSup | rarity | motto
-// ══════════════════════════════════════════════════
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbxl8ZArypLJ7rEoNt9cWYIkkw2e8cmel1hTKW5W6Rcjsxp85uqKHIFHvt6nMjGFcDrI6w/exec';
 
 var all = [], filtered = [];
@@ -316,17 +304,11 @@ function applyRole() {
   document.getElementById('btnEdit').style.display = role === 'admin' ? 'block' : 'none';
 }
 
-// ══ LOAD DATA ══
-// GAS harus handle: ?action=getPlayers
-// Return: { status:'ok', players:[{ namaLengkap, namaPanggilan, tempatLahir,
-//           tanggalLahir, tinggiBadan, beratBadan, nomorHp, namaSekolah,
-//           kelasTingkat, alamat, posisi, nomorPunggung, turnamen,
-//           fotoUrl (optional), ratingAtk, ratingDef, ratingSpd,
-//           ratingInt, ratingSup, rarity, motto }, ...] }
+// ══ LOAD DATA — GET request, bisa baca response ══
 async function loadPlayers(refresh) {
   var el = document.getElementById('list');
   var btn = document.getElementById('btnR');
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>' + (refresh ? 'MEMPERBARUI...' : 'MENGHUBUNGKAN KE GOOGLE SHEETS...') + '</div>';
+  el.innerHTML = '<div class="loading"><div class="spinner"></div>' + (refresh ? 'MEMPERBARUI...' : 'MENGHUBUNGKAN KE SERVER...') + '</div>';
   btn.classList.add('spinning');
   hideErr();
   try {
@@ -342,7 +324,7 @@ async function loadPlayers(refresh) {
     }
   } catch(e) {
     all = demoData();
-    showErr('Tidak bisa konek ke Google Sheets (' + e.message + '). Tampil data demo. Tambahkan handler action=getPlayers di GAS.');
+    showErr('Tidak bisa konek ke server (' + e.message + '). Tampil data demo. Pastikan GAS sudah handle action=getPlayers.');
   }
   btn.classList.remove('spinning');
   render();
@@ -352,7 +334,9 @@ async function loadPlayers(refresh) {
 function render() {
   var q = document.getElementById('srch').value.toLowerCase().trim();
   filtered = all.filter(function(p) {
-    return !q || (p.namaLengkap||'').toLowerCase().includes(q) || (p.namaPanggilan||'').toLowerCase().includes(q) || (p.posisi||'').toLowerCase().includes(q);
+    return !q || (p.namaLengkap||'').toLowerCase().includes(q)
+              || (p.namaPanggilan||'').toLowerCase().includes(q)
+              || (p.posisi||'').toLowerCase().includes(q);
   });
   if (sortField) {
     filtered.sort(function(a, b) {
@@ -365,7 +349,11 @@ function render() {
   // Stats
   document.getElementById('sTot').textContent = filtered.length;
   var pc = {};
-  filtered.forEach(function(p) { (p.posisi||'').split(',').forEach(function(v) { var t = v.trim(); if(t) pc[t]=(pc[t]||0)+1; }); });
+  filtered.forEach(function(p) {
+    (p.posisi||'').split(',').forEach(function(v) {
+      var t = v.trim(); if(t) pc[t]=(pc[t]||0)+1;
+    });
+  });
   var top = Object.entries(pc).sort(function(a,b){return b[1]-a[1];})[0];
   document.getElementById('sPos').textContent = top ? top[0].replace('Goalkeeper','GK').replace(' Wing','W').replace('Back','Bk') : '—';
   var tbs = filtered.map(function(p){return parseFloat(p.tinggiBadan)||0;}).filter(Boolean);
@@ -401,7 +389,6 @@ document.getElementById('srch').addEventListener('input', render);
 // ══ CARD HELPERS ══
 var TYPE_MAP = {'Pivot':'MEGA','Center':'MEGA','Left Wing':'CHAMPION','Right Wing':'CHAMPION','Goalkeeper':'ULTIMATE','Left Back':'ARMOR','Right Back':'ARMOR'};
 var CAT_MAP  = {'Pivot':'VACCINE','Center':'DATA','Left Wing':'DATA','Right Wing':'DATA','Goalkeeper':'VACCINE','Left Back':'VIRUS','Right Back':'VIRUS'};
-
 var SEC_MAP  = {'Pivot':'Kurangi DP lawan 3000 untuk ronde ini.','Center':'Suspensi 1 pemain lawan hingga akhir ronde.','Left Wing':'Tambah 2000 DP ke semua pemain [EXPERT].','Right Wing':'Tambah 2000 DP ke semua pemain [EXPERT].','Goalkeeper':'Batalkan serangan pertama lawan ronde ini.','Left Back':'Semua pemain lawan kehilangan 1000 DP.','Right Back':'Semua pemain lawan kehilangan 1000 DP.'};
 
 function calcDP(p) {
@@ -423,7 +410,6 @@ function showCard(idx) {
   var p = filtered[idx];
   var pos = (p.posisi||'').split(',')[0].trim();
 
-  // Avatar
   var avaEl = document.getElementById('cAva');
   if (p.fotoUrl) {
     avaEl.innerHTML = '<img src="'+p.fotoUrl+'" alt="">';
@@ -446,9 +432,6 @@ function showCard(idx) {
   rarEl.textContent = r==='SR'?'★ SR':r==='R'?'★ R':'C';
   rarEl.className   = r==='SR'?'rar-sr':'rar-r';
 
-
-
-  // Info dari sheet
   var tb=parseFloat(p.tinggiBadan)||0, bb=parseFloat(p.beratBadan)||0;
   document.getElementById('iTB').textContent   = (tb?tb+'cm':'—')+' / '+(bb?bb+'kg':'—');
   document.getElementById('iTL').textContent   = p.tanggalLahir ? fmtDate(p.tanggalLahir) : '—';
@@ -456,7 +439,6 @@ function showCard(idx) {
   document.getElementById('iAsal').textContent = [p.tempatLahir,p.alamat].filter(Boolean).join(', ')||'—';
   document.getElementById('iTurn').textContent = (p.turnamen||'—').replace(/\|/g,'·');
 
-  // Stats
   document.getElementById('cAtk').textContent = sv(p.ratingAtk, tb*47);
   document.getElementById('cDef').textContent = sv(p.ratingDef, bb*89);
   document.getElementById('cSpd').textContent = sv(p.ratingSpd, tb*41);
@@ -466,6 +448,7 @@ function showCard(idx) {
   document.getElementById('cSec').textContent   = SEC_MAP[pos]||'Efek pertahanan aktif.';
   document.getElementById('cQuote').textContent = '"'+(p.motto||'WIN TOGETHER, EXPERT HANDBALL.')+'"';
 
+  applyRole();
   document.getElementById('overlay').classList.add('open');
 }
 function maybeClose(e) { if(e.target===document.getElementById('overlay')) closeCard(); }
@@ -491,36 +474,48 @@ function openEdit() {
 }
 function closeEdit() { document.getElementById('editOv').classList.remove('open'); }
 
+// ══ SAVE EDIT — FIX: no-cors, tidak baca response ══
 async function saveEdit() {
   var idx = parseInt(document.getElementById('eIdx').value);
   var p   = filtered[idx];
   var pay = {
-    action:'updatePlayerCard',
-    nomorHp: p.nomorHp,                          // key untuk identify row di GAS
+    action:        'updatePlayerCard',
+    nomorHp:       p.nomorHp,
     nomorPunggung: document.getElementById('eNo').value,
-    rarity:  document.getElementById('eRar').value,
-    ratingAtk: +document.getElementById('eAtk').value||0,
-    ratingDef: +document.getElementById('eDef').value||0,
-    ratingSpd: +document.getElementById('eSpd').value||0,
-    ratingInt: +document.getElementById('eInt').value||0,
-    ratingSup: +document.getElementById('eSup').value||0,
-    motto: document.getElementById('eMotto').value.trim()
+    rarity:        document.getElementById('eRar').value,
+    ratingAtk:     +document.getElementById('eAtk').value||0,
+    ratingDef:     +document.getElementById('eDef').value||0,
+    ratingSpd:     +document.getElementById('eSpd').value||0,
+    ratingInt:     +document.getElementById('eInt').value||0,
+    ratingSup:     +document.getElementById('eSup').value||0,
+    motto:         document.getElementById('eMotto').value.trim()
   };
+
   document.getElementById('btnSave').disabled     = true;
   document.getElementById('svSpin').style.display = 'block';
   document.getElementById('svTxt').textContent    = 'MENYIMPAN...';
+
   try {
-    var res  = await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(pay)});
-    var data = await res.json();
-    if(data.status!=='ok') throw new Error(data.message||'Gagal');
-    Object.assign(filtered[idx],pay);
-    var gi = all.findIndex(function(x){return x.nomorHp===p.nomorHp;});
-    if(gi>=0) Object.assign(all[gi],pay);
-    toast('✓ Kartu '+p.namaLengkap+' diperbarui','ok');
-    closeEdit(); render();
-    setTimeout(function(){showCard(idx);},150);
+    // FIX: mode no-cors — tidak bisa baca response, tapi request terkirim ke GAS
+    await fetch(GAS_URL, {
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body:    JSON.stringify(pay)
+    });
+
+    // Update data lokal langsung tanpa tunggu konfirmasi server
+    Object.assign(filtered[idx], pay);
+    var gi = all.findIndex(function(x){ return x.nomorHp === p.nomorHp; });
+    if(gi >= 0) Object.assign(all[gi], pay);
+
+    toast('✓ Kartu '+p.namaLengkap+' diperbarui', 'ok');
+    closeEdit();
+    render();
+    setTimeout(function(){ showCard(idx); }, 150);
+
   } catch(e) {
-    toast('❌ Gagal: '+e.message,'err');
+    toast('❌ Gagal mengirim: ' + e.message, 'err');
   } finally {
     document.getElementById('btnSave').disabled     = false;
     document.getElementById('svSpin').style.display = 'none';
@@ -537,7 +532,7 @@ function toast(msg,type) {
 function showErr(msg) { document.getElementById('errMsg').textContent=msg; document.getElementById('errBar').classList.add('show'); }
 function hideErr()    { document.getElementById('errBar').classList.remove('show'); }
 
-// ══ DEMO DATA — key persis dari form.html ══
+// ══ DEMO DATA ══
 function demoData() {
   return [
     {namaLengkap:'Ahmad Rizki',namaPanggilan:'Rizki',tempatLahir:'Jakarta',tanggalLahir:'2002-05-14',tinggiBadan:'175',beratBadan:'68',nomorHp:'08120001',namaSekolah:'SMA N 1 Jakarta',kelasTingkat:'XII',alamat:'Jaksel',posisi:'Pivot',nomorPunggung:'7',turnamen:'Popda 2024 | Regional 2023',ratingAtk:8500,ratingDef:6200,ratingSpd:7100,ratingInt:8000,ratingSup:7500,rarity:'SR',motto:'Tekanan adalah hak istimewa.'},
@@ -554,3 +549,4 @@ loadPlayers(false);
 </script>
 </div>
 </body>
+</html>
