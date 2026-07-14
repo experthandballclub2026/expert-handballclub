@@ -408,6 +408,7 @@ async function submitForm() {
     var turnamen = Array.from(document.querySelectorAll('#tlist input')).map(function(i) { return i.value.trim(); }).filter(Boolean).join(' | ');
 
     var payload = {
+    action:        'submitForm',
       timestamp:     ts,
       namaLengkap:   document.getElementById('namaLengkap').value.trim(),
       namaPanggilan: document.getElementById('namaPanggilan').value.trim(),
