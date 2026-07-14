@@ -448,10 +448,11 @@ async function submitForm() {
     var savedName = payload.namaLengkap;
 
     var response = await fetch(gasUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
-    });
+  method: 'POST',
+  mode: 'no-cors',        // ← TAMBAHKAN INI
+  headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+  body: JSON.stringify(payload)
+});
 
     var result = await response.json();
 
